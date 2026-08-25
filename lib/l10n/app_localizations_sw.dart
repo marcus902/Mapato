@@ -112,11 +112,11 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get notifOnMessage =>
-      'Upatikanaji wa arifa uko washwa -- miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki endapo itafika.';
+      'Upatikanaji wa arifa uko washwa -- miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki itaonekana hapa otomatiki endapo itafika.';
 
   @override
   String get notifOffMessage =>
-      'Washesha upatikanaji wa arifa kwenye Mipangilio na miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki.';
+      'Washesha upatikanaji wa arifa kwenye Mipangilio na miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki itaonekana hapa otomatiki.';
 
   @override
   String get openSettings => 'Fungua Mipangilio';
@@ -591,14 +591,14 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get notificationAccessDesc =>
-      'Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa';
+      'Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki';
 
   @override
   String get smsAccessLabel => 'Upatikanaji wa SMS';
 
   @override
   String get smsAccessDesc =>
-      'Soma SMS za pesa mtandaoni kama mbadala endapo arifa zimezimwa';
+      'Soma SMS za pesa mtandaoni na benki kama mbadala endapo arifa zimezimwa';
 
   @override
   String get enableAccess => 'Washa';

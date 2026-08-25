@@ -112,11 +112,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifOnMessage =>
-      'Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically as they arrive.';
+      'Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically as they arrive.';
 
   @override
   String get notifOffMessage =>
-      'Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically.';
+      'Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically.';
 
   @override
   String get openSettings => 'Open Settings';
@@ -592,14 +592,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notificationAccessDesc =>
-      'Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications';
+      'Capture M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank notifications';
 
   @override
   String get smsAccessLabel => 'SMS access';
 
   @override
   String get smsAccessDesc =>
-      'Read mobile-money SMS as a backup when notifications are off';
+      'Read mobile-money and bank SMS as a backup when notifications are off';
 
   @override
   String get enableAccess => 'Enable';

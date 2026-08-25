@@ -15,6 +15,10 @@ object MnoFilters {
         "halo", "halopesa",
         "azam", "azampesa",
         "mobile money", "mobility",
+        // Banks
+        "crdb", "nmb", "ttb", "stanbic", "nbc",
+        "absa", "exim", "kcb", "equity", "dtb",
+        "azania", "akiba", "tib", "fbm",
     )
 
     private val SHORTCODE = Pattern.compile("^\\d{3,6}$")
@@ -39,5 +43,18 @@ object MnoFilters {
         "com.halopesa.eu",
         "tz.co.halo.halopesa",
         "com.azampesa",
+        // Tanzanian banks
+        "com.crdbbank",
+        "com.nmb.bank",
+        "com.ttb.mobilebanking",
+        "com.stanbicbank.tz",
+        "com.nbcbank",
+        "com.absa.link",
+        "com.eximbank",
+        "com.kcbgroup.tz",
+        "com.diamondtrustbank",
+        "com.azaniabank",
+        "com.akibabank",
+        "com.tib.co.tz",
     )
 }

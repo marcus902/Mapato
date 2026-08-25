@@ -21,6 +21,7 @@ class _CaptureSource {
 }
 
 const _captureSources = [
+  // Mobile money
   _CaptureSource('M-Pesa', 'com.vodacom.mpesa'),
   _CaptureSource('Mixx by Yas', 'tz.tigo.mfsapp'),
   _CaptureSource('Tigo Pesa (legacy)', 'com.tigo.pesa'),
@@ -28,6 +29,19 @@ const _captureSources = [
   _CaptureSource('HaloPesa', 'com.halopesa.eu'),
   _CaptureSource('HaloPesa (legacy)', 'tz.co.halo.halopesa'),
   _CaptureSource('AzamPesa', 'com.azampesa'),
+  // Banks
+  _CaptureSource('CRDB Bank', 'com.crdbbank'),
+  _CaptureSource('NMB Bank', 'com.nmb.bank'),
+  _CaptureSource('TTB Bank', 'com.ttb.mobilebanking'),
+  _CaptureSource('Stanbic Bank', 'com.stanbicbank.tz'),
+  _CaptureSource('NBC Bank', 'com.nbcbank'),
+  _CaptureSource('Absa Bank', 'com.absa.link'),
+  _CaptureSource('Exim Bank', 'com.eximbank'),
+  _CaptureSource('KCB Bank', 'com.kcbgroup.tz'),
+  _CaptureSource('DTB', 'com.diamondtrustbank'),
+  _CaptureSource('Azania Bank', 'com.azaniabank'),
+  _CaptureSource('Akiba Bank', 'com.akibabank'),
+  _CaptureSource('TIB', 'com.tib.co.tz'),
 ];
 
 class SettingsScreen extends StatefulWidget {

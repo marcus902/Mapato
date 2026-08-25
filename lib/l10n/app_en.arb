@@ -47,8 +47,8 @@
   "switchToDark": "Switch to dark",
 
   "noTransactionsYet": "No transactions yet",
-  "notifOnMessage": "Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically as they arrive.",
-  "notifOffMessage": "Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically.",
+"notifOnMessage": "Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically as they arrive.",
+  "notifOffMessage": "Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically.",
   "openSettings": "Open Settings",
 
   "tagline": "Your money, every network, one view.",
@@ -256,9 +256,9 @@
   "permissionsTitle": "Set up capture",
   "permissionsSubtitle": "Allow Mapato to read your mobile-money notifications and SMS so it can automatically record transactions.",
   "notificationAccessLabel": "Notification access",
-  "notificationAccessDesc": "Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications",
+  "notificationAccessDesc": "Capture M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank notifications",
   "smsAccessLabel": "SMS access",
-  "smsAccessDesc": "Read mobile-money SMS as a backup when notifications are off",
+  "smsAccessDesc": "Read mobile-money and bank SMS as a backup when notifications are off",
   "enableAccess": "Enable",
   "granted": "Granted",
   "setupComplete": "Done",

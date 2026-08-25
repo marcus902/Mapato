@@ -47,8 +47,8 @@
   "switchToDark": "Badilisha hadi giza",
 
   "noTransactionsYet": "Bado hakuna miamala",
-  "notifOnMessage": "Upatikanaji wa arifa uko washwa -- miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki endapo itafika.",
-  "notifOffMessage": "Washesha upatikanaji wa arifa kwenye Mipangilio na miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki.",
+"notifOnMessage": "Upatikanaji wa arifa uko washwa -- miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki itaonekana hapa otomatiki endapo itafika.",
+  "notifOffMessage": "Washesha upatikanaji wa arifa kwenye Mipangilio na miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki itaonekana hapa otomatiki.",
   "openSettings": "Fungua Mipangilio",
 
   "tagline": "Pesa yako, kila mtandao, kwa mtazamo mmoja.",
@@ -256,9 +256,9 @@
   "permissionsTitle": "Weka uchukuzi",
   "permissionsSubtitle": "Ruhusu Mapato kusoma arifa na SMS za pesa mtandaoni ili irekodi miamala kiotomatiki.",
   "notificationAccessLabel": "Upatikanaji wa arifa",
-  "notificationAccessDesc": "Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa",
+  "notificationAccessDesc": "Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa na benki",
   "smsAccessLabel": "Upatikanaji wa SMS",
-  "smsAccessDesc": "Soma SMS za pesa mtandaoni kama mbadala endapo arifa zimezimwa",
+  "smsAccessDesc": "Soma SMS za pesa mtandaoni na benki kama mbadala endapo arifa zimezimwa",
   "enableAccess": "Washa",
   "granted": "Imetolewa",
   "setupComplete": "Maliza",

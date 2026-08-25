@@ -3,6 +3,7 @@ import 'package:mapato/database.dart';
 
 /// Supported Tanzanian mobile money networks.
 const Map<String, String> packageToNetwork = {
+  // Mobile money
   'com.vodacom.mpesa': 'mpesa',
   'tz.tigo.mfsapp': 'mixx',
   'com.tigo.pesa': 'mixx',
@@ -10,6 +11,19 @@ const Map<String, String> packageToNetwork = {
   'com.halopesa.eu': 'halo',
   'tz.co.halo.halopesa': 'halo',
   'com.azampesa': 'azam',
+  // Banks
+  'com.crdbbank': 'CRDB',
+  'com.nmb.bank': 'NMB',
+  'com.ttb.mobilebanking': 'TTB',
+  'com.stanbicbank.tz': 'Stanbic',
+  'com.nbcbank': 'NBC',
+  'com.absa.link': 'Absa',
+  'com.eximbank': 'Exim',
+  'com.kcbgroup.tz': 'KCB',
+  'com.diamondtrustbank': 'DTB',
+  'com.azaniabank': 'Azania',
+  'com.akibabank': 'Akiba',
+  'com.tib.co.tz': 'TIB',
 };
 
 class ParsedTransaction {
@@ -74,11 +88,25 @@ String _detectNetwork(String text, String? package) {
     return packageToNetwork[package]!;
   }
   final t = text.toLowerCase();
+  // Mobile money
   if (t.contains('mixx') || t.contains('yas') || t.contains('tigo')) return 'mixx';
   if (t.contains('airtel')) return 'airtel';
   if (t.contains('halo')) return 'halo';
   if (t.contains('azam')) return 'azam';
   if (t.contains('mpesa') || t.contains('m-pesa')) return 'mpesa';
+  // Banks
+  if (t.contains('crdb')) return 'CRDB';
+  if (t.contains('nmb')) return 'NMB';
+  if (t.contains('ttb')) return 'TTB';
+  if (t.contains('stanbic')) return 'Stanbic';
+  if (t.contains('nbc')) return 'NBC';
+  if (t.contains('absa')) return 'Absa';
+  if (t.contains('exim')) return 'Exim';
+  if (t.contains('kcb')) return 'KCB';
+  if (t.contains('dtb') || t.contains('diamond trust')) return 'DTB';
+  if (t.contains('azania')) return 'Azania';
+  if (t.contains('akiba')) return 'Akiba';
+  if (t.contains('tib')) return 'TIB';
   return 'unknown';
 }
 
@@ -93,7 +121,9 @@ String _detectDirection(String text) {
     'sent you', 'sent yu',
     'kupewa', 'umepewa', 'kupewa',
     'imedalia', 'amedalia', // deposit/credit to you
-    'receipt', 'credit',
+    'receipt', 'credit', 'credited',
+    'inflow', 'inflows',
+    'has been credited', 'has been deposited',
   ];
   // Money leaving YOU. Note: bare "sent" is ambiguous, so only treat as
   // outgoing when it clearly refers to you sending (e.g. "you sent",
@@ -103,7 +133,9 @@ String _detectDirection(String text) {
     'you sent', 'sent money', 'has been sent to', 'been sent to',
     'umelipa', 'lipa', 'ulilipia', 'lipia', 'lipa mdogo',
     'toa', 'ametoa', 'metoa', 'withdraw', 'withdrawal',
-    'lima', 'paid', 'paybill', 'debit',
+    'lima', 'paid', 'paybill', 'debit', 'debited',
+    'outflow', 'outflows',
+    'has been debited', 'has been deducted',
   ];
   if (incoming.any((w) => t.contains(w))) return 'in';
   if (outgoing.any((w) => t.contains(w))) return 'out';
@@ -135,6 +167,10 @@ const _txnSignals = [
   'withdraw', 'withdrawal', 'deposit', 'transfer', 'cash',
   'salio', 'balance',
   'malipo', 'miamala', 'muamala', 'transaction', 'payment',
+  // Bank signals
+  'credit', 'credited', 'debit', 'debited',
+  'inflow', 'outflow', 'deducted',
+  'account', 'akaunti',
 ];
 
 bool _looksLikeTransaction(String text) {

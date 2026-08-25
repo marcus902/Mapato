@@ -299,13 +299,13 @@ abstract class AppLocalizations {
   /// No description provided for @notifOnMessage.
   ///
   /// In en, this message translates to:
-  /// **'Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically as they arrive.'**
+  /// **'Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically as they arrive.'**
   String get notifOnMessage;
 
   /// No description provided for @notifOffMessage.
   ///
   /// In en, this message translates to:
-  /// **'Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically.'**
+  /// **'Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank transactions will appear here automatically.'**
   String get notifOffMessage;
 
   /// No description provided for @openSettings.
@@ -1169,7 +1169,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificationAccessDesc.
   ///
   /// In en, this message translates to:
-  /// **'Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications'**
+  /// **'Capture M-Pesa, Mixx, Airtel, HaloPesa, AzamPesa and bank notifications'**
   String get notificationAccessDesc;
 
   /// No description provided for @smsAccessLabel.
@@ -1181,7 +1181,7 @@ abstract class AppLocalizations {
   /// No description provided for @smsAccessDesc.
   ///
   /// In en, this message translates to:
-  /// **'Read mobile-money SMS as a backup when notifications are off'**
+  /// **'Read mobile-money and bank SMS as a backup when notifications are off'**
   String get smsAccessDesc;
 
   /// No description provided for @enableAccess.

@@ -14,7 +14,19 @@ class MapatoNotificationService : NotificationListenerService() {
         "com.airtel.money",         // Airtel Money
         "com.halopesa.eu",          // HaloPesa (Halotel / Viettel)
         "tz.co.halo.halopesa",      // legacy HaloPesa package
-        "com.azampesa"              // AzamPesa
+        "com.azampesa",             // AzamPesa
+        "com.crdbbank",             // CRDB Bank
+        "com.nmb.bank",             // NMB Bank
+        "com.ttb.mobilebanking",    // TTB Bank
+        "com.stanbicbank.tz",       // Stanbic Bank
+        "com.nbcbank",              // NBC Bank
+        "com.absa.link",            // Absa Bank
+        "com.eximbank",             // Exim Bank
+        "com.kcbgroup.tz",          // KCB Bank
+        "com.diamondtrustbank",     // DTB
+        "com.azaniabank",           // Azania Bank
+        "com.akibabank",            // Akiba Commercial Bank
+        "com.tib.co.tz",            // TIB
     )
 
     private val prefs: SharedPreferences
