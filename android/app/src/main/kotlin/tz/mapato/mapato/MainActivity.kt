@@ -58,6 +58,9 @@ class MainActivity : FlutterActivity() {
                     "isNotificationListenerEnabled" -> {
                         result.success(isNotificationListenerEnabled())
                     }
+                    "tryEnableNotificationListener" -> {
+                        result.success(tryEnableNotificationListener())
+                    }
                     else -> result.notImplemented()
                 }
             }
@@ -191,6 +194,45 @@ class MainActivity : FlutterActivity() {
         val wanted = ComponentName(this, MapatoNotificationService::class.java)
             .flattenToString()
         return flat.split(":").any { it.equals(wanted, ignoreCase = true) }
+    }
+
+    /**
+     * On Android 14+ manually installed apps may not appear in the
+     * notification-access settings list.  This method writes our
+     * component directly into the secure setting so the system
+     * recognises us as an enabled listener without user interaction.
+     *
+     * Returns true when the listener is now enabled (or was already).
+     */
+    private fun tryEnableNotificationListener(): Boolean {
+        if (isNotificationListenerEnabled()) return true
+
+        val cn = ComponentName(this, MapatoNotificationService::class.java)
+            .flattenToString()
+
+        // 1. Ensure the component itself is enabled at the package level
+        try {
+            packageManager.setComponentEnabledSetting(
+                ComponentName(this, MapatoNotificationService::class.java),
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP
+            )
+        } catch (_: Exception) { }
+
+        // 2. Try writing the component into enabled_notification_listeners
+        //    This requires WRITE_SECURE_SETTINGS (granted via ADB).
+        try {
+            val existing = Settings.Secure.getString(contentResolver, "enabled_notification_listeners") ?: ""
+            val parts = existing.split(":").filter { it.isNotEmpty() }
+            if (parts.none { it.equals(cn, ignoreCase = true) }) {
+                val updated = if (existing.isBlank()) cn else "$existing:$cn"
+                Settings.Secure.putString(contentResolver, "enabled_notification_listeners", updated)
+            }
+        } catch (_: SecurityException) {
+            // WRITE_SECURE_SETTINGS not granted — fall through to manual flow
+        }
+
+        return isNotificationListenerEnabled()
     }
 
     private fun showTransaction(title: String, body: String) {

@@ -88,6 +88,19 @@ Future<bool> requestPostNotificationPermission() async {
   }
 }
 
+/// Tries to enable the notification-listener service programmatically
+/// (writes to Settings.Secure via WRITE_SECURE_SETTINGS if granted via ADB).
+/// Returns true if the listener is now enabled.
+Future<bool> tryEnableNotificationListener() async {
+  try {
+    final enabled = await settingsChannel
+        .invokeMethod<bool>('tryEnableNotificationListener');
+    return enabled ?? false;
+  } on PlatformException {
+    return false;
+  }
+}
+
 /// Requests READ_SMS + RECEIVE_SMS permissions via the Android runtime dialog.
 Future<bool> requestSmsPermission() async {
   try {

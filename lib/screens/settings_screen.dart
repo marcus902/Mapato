@@ -11,9 +11,6 @@ import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
 import 'package:provider/provider.dart';
 
-const _captureChannel = MethodChannel('tz.mapato/capture');
-const _smsPrefKey = 'sms_capture_enabled';
-
 class _CaptureSource {
   final String label;
   final String pkg;
@@ -53,7 +50,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with WidgetsBindingObserver {
-  bool _smsEnabled = false;
   bool _notifEnabled = false;
   bool _loading = true;
 
@@ -87,10 +83,10 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   Future<void> _initState() async {
     final notif = await isNotificationListenerEnabled();
-    await _initSmsState();
     await _initCaptureState();
     if (!mounted) return;
     setState(() => _notifEnabled = notif);
+    _loading = false;
   }
 
   Future<void> _initCaptureState() async {
@@ -130,25 +126,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     await setPrefString('capture_packages', _captureSet.join(','));
   }
 
-  Future<void> _initSmsState() async {
-    final saved = await getPrefBool(_smsPrefKey);
-    final granted =
-        await permissionsChannel.invokeMethod('checkSmsPermission') ?? false;
-    final active = saved && granted;
-    if (active) {
-      try {
-        await _captureChannel.invokeMethod('startSmsService');
-      } on PlatformException {
-        // ignore
-      }
-    }
-    if (!mounted) return;
-    setState(() {
-      _smsEnabled = active;
-      _loading = false;
-    });
-  }
-
   Future<void> _openListenerSettings() async {
     try {
       await settingsChannel.invokeMethod('openNotificationSettings');
@@ -158,62 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen>
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(s.failedToOpenSettings(e.toString()))),
       );
-    }
-  }
-
-  Future<void> _toggleSms(bool value) async {
-    if (!mounted) return;
-    final s = AppLocalizations.of(context);
-    if (value) {
-      bool granted = false;
-      try {
-        granted = await permissionsChannel.invokeMethod('requestSmsPermission') ??
-            false;
-      } on PlatformException catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(s.smsPermissionFailed(e.toString()))));
-        return;
-      }
-      if (!mounted) return;
-      if (!granted) {
-        if (!mounted) return;
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(s.smsPermissionBlocked),
-            content: Text(s.smsPermissionBlockedMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(s.ok),
-              ),
-            ],
-          ),
-        );
-        setState(() => _smsEnabled = false);
-        return;
-      }
-      await setPrefBool(_smsPrefKey, true);
-      try {
-        await _captureChannel.invokeMethod('startSmsService');
-      } on PlatformException catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('SMS capture failed: $e')));
-        return;
-      }
-      if (!mounted) return;
-      setState(() => _smsEnabled = true);
-    } else {
-      await setPrefBool(_smsPrefKey, false);
-      try {
-        await _captureChannel.invokeMethod('stopSmsService');
-      } on PlatformException {
-        // ignore
-      }
-      if (!mounted) return;
-      setState(() => _smsEnabled = false);
     }
   }
 
@@ -273,19 +194,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                         child: Text(s.enableBtn, style: const TextStyle(fontSize: 12)),
                       ),
                 onTap: _openListenerSettings,
-              ),
-              const Divider(height: 1),
-              SwitchListTile(
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                secondary: const Icon(Icons.sms, size: 22),
-                title: Text(s.smsCapture, style: const TextStyle(fontSize: 14)),
-                subtitle: Text(
-                  s.fallbackNoNotification,
-                  style: const TextStyle(fontSize: 12),
-                ),
-                value: _loading ? false : _smsEnabled,
-                onChanged: _loading ? null : _toggleSms,
               ),
               const Divider(height: 1),
               ExpansionTile(
