@@ -14,14 +14,41 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with WidgetsBindingObserver {
   final _controller = PageController();
   int _page = 0;
 
+  // Permission states for the permissions page
+  bool _notifEnabled = false;
+  bool _smsEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _refreshPermissions();
+  }
+
+  Future<void> _refreshPermissions() async {
+    final notif = await isNotificationListenerEnabled();
+    final sms = await permissionsChannel.invokeMethod<bool>('checkSmsPermission') ?? false;
+    if (!mounted) return;
+    setState(() {
+      _notifEnabled = notif;
+      _smsEnabled = sms;
+    });
   }
 
   List<_Page> _pages(BuildContext context) => [
@@ -51,6 +78,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: AppLocalizations.of(context).onboardingLanguageSubtitle,
       isLanguagePicker: true,
     ),
+    _Page(
+      icon: Icons.shield_outlined,
+      title: AppLocalizations.of(context).permissionsTitle,
+      body: AppLocalizations.of(context).permissionsSubtitle,
+      isPermissions: true,
+    ),
   ];
 
   Future<void> _finish() async {
@@ -60,75 +93,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         .pushReplacement(MaterialPageRoute(builder: (_) => const Root()));
   }
 
-  Future<void> _showSmsDialog() async {
-    final s = AppLocalizations.of(context);
-    final result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: true,
-      builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.sms_outlined, size: 40, color: AppColors.primary),
-        title: Text(s.allowSmsTitle),
-        content: Text(s.allowSmsBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(s.notNow),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(s.allow),
-          ),
-        ],
-      ),
-    );
-
-    if (result == true) {
-      await requestSmsPermission();
+  Future<void> _enableNotificationAccess() async {
+    // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
+    await requestPostNotificationPermission();
+    // Open notification listener settings so user can manually enable it
+    try {
+      await settingsChannel.invokeMethod('openNotificationSettings');
+    } on PlatformException {
+      // ignored
     }
-    // After SMS dialog, show notification dialog
-    await _showNotificationDialog();
   }
 
-  Future<void> _showNotificationDialog() async {
-    final s = AppLocalizations.of(context);
-    final result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: true,
-      builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.notifications_active_outlined, size: 40, color: AppColors.primary),
-        title: Text(s.allowNotificationsTitle),
-        content: Text(s.allowNotificationsBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(s.notNow),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(s.allow),
-          ),
-        ],
-      ),
-    );
-
-    if (result == true) {
-      // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
-      await requestPostNotificationPermission();
-      // Open notification listener settings so user can manually enable it
-      try {
-        await settingsChannel.invokeMethod('openNotificationSettings');
-      } on PlatformException {
-        // ignored
-      }
-    }
-
-    await _finish();
+  Future<void> _enableSmsAccess() async {
+    await requestSmsPermission();
+    // Check if granted after dialog
+    final granted = await permissionsChannel.invokeMethod<bool>('checkSmsPermission') ?? false;
+    if (!mounted) return;
+    setState(() => _smsEnabled = granted);
   }
 
   @override
   Widget build(BuildContext context) {
     final pages = _pages(context);
     final isLast = _page == pages.length - 1;
+    final isPerms = pages[_page].isPermissions;
     final s = AppLocalizations.of(context);
 
     return Scaffold(
@@ -146,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
                           fontSize: 18)),
-                  if (_page > 0 && !isLast)
+                  if (_page > 0 && !isLast && !isPerms)
                     TextButton(
                       onPressed: _finish,
                       child: Text(s.skip,
@@ -159,7 +147,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: PageView.builder(
                 controller: _controller,
                 itemCount: pages.length,
-                onPageChanged: (i) => setState(() => _page = i),
+                onPageChanged: (i) {
+                  setState(() => _page = i);
+                  if (pages[i].isPermissions) _refreshPermissions();
+                },
                 itemBuilder: (context, i) {
                   final p = pages[i];
                   if (p.isLanguagePicker) {
@@ -167,6 +158,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onSelectLanguage: (locale) {
                         context.read<AppState>().setLocale(locale);
                       },
+                    );
+                  }
+                  if (p.isPermissions) {
+                    return _PermissionsPage(
+                      notifEnabled: _notifEnabled,
+                      smsEnabled: _smsEnabled,
+                      onEnableNotif: _enableNotificationAccess,
+                      onEnableSms: _enableSmsAccess,
                     );
                   }
                   return Padding(
@@ -231,45 +230,259 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-              child: isLast
-                  ? Column(
-                      children: [
-                        SizedBox(
+              child: isPerms
+                  ? SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        onPressed: _finish,
+                        child: Text(s.setupComplete,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700)),
+                      ),
+                    )
+                  : isLast
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: AppColors.primary,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                onPressed: () => _controller.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.ease,
+                                ),
+                                child: Text(s.getStarted,
+                                    style: const TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.w700)),
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox(
                           width: double.infinity,
                           child: FilledButton(
                             style: FilledButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: AppColors.primary,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
                             ),
-                            onPressed: _showSmsDialog,
-                            child: Text(s.getStarted,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w700)),
+                            onPressed: () => _controller.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            ),
+                            child: Text(s.next),
                           ),
                         ),
-                      ],
-                    )
-                  : SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
-                        ),
-                        onPressed: () => _controller.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease,
-                        ),
-                        child: Text(s.next),
-                      ),
-                    ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PermissionsPage extends StatelessWidget {
+  final bool notifEnabled;
+  final bool smsEnabled;
+  final VoidCallback onEnableNotif;
+  final VoidCallback onEnableSms;
+
+  const _PermissionsPage({
+    required this.notifEnabled,
+    required this.smsEnabled,
+    required this.onEnableNotif,
+    required this.onEnableSms,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Icon(Icons.shield_outlined,
+                color: Colors.white, size: 48),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            s.permissionsTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            s.permissionsSubtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.85),
+              fontSize: 14,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 28),
+          _PermCard(
+            icon: Icons.notifications_active_outlined,
+            label: s.notificationAccessLabel,
+            desc: s.notificationAccessDesc,
+            granted: notifEnabled,
+            onEnable: onEnableNotif,
+            enableLabel: s.enableAccess,
+            grantedLabel: s.granted,
+          ),
+          const SizedBox(height: 12),
+          _PermCard(
+            icon: Icons.sms_outlined,
+            label: s.smsAccessLabel,
+            desc: s.smsAccessDesc,
+            granted: smsEnabled,
+            onEnable: onEnableSms,
+            enableLabel: s.enableAccess,
+            grantedLabel: s.granted,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PermCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String desc;
+  final bool granted;
+  final VoidCallback onEnable;
+  final String enableLabel;
+  final String grantedLabel;
+
+  const _PermCard({
+    required this.icon,
+    required this.label,
+    required this.desc,
+    required this.granted,
+    required this.onEnable,
+    required this.enableLabel,
+    required this.grantedLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: granted
+              ? Colors.white.withOpacity(0.5)
+              : Colors.white.withOpacity(0.2),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: granted
+                  ? Colors.white.withOpacity(0.25)
+                  : Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: Colors.white, size: 24),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  desc,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.75),
+                    fontSize: 12,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          granted
+              ? Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.check, color: Colors.white, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        grantedLabel,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : FilledButton(
+                  onPressed: onEnable,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppColors.primary,
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(enableLabel,
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w700)),
+                ),
+        ],
       ),
     );
   }
@@ -356,10 +569,12 @@ class _Page {
   final String title;
   final String body;
   final bool isLanguagePicker;
+  final bool isPermissions;
   const _Page({
     required this.icon,
     required this.title,
     required this.body,
     this.isLanguagePicker = false,
+    this.isPermissions = false,
   });
 }

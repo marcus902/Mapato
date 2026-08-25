@@ -251,6 +251,23 @@
   "allowSmsTitle": "Ruhusu Mapato kusoma SMS zako?",
   "allowSmsBody": "Mapato inasoma SMS za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa ili kurekodi miamala kiotomatiki. Ujumbe wako unabaki kwenye kifaa chako.",
   "allow": "Ruhusu",
-  "notNow": "Sio sasa"
+  "notNow": "Sio sasa",
+
+  "permissionsTitle": "Weka uchukuzi",
+  "permissionsSubtitle": "Ruhusu Mapato kusoma arifa na SMS za pesa mtandaoni ili irekodi miamala kiotomatiki.",
+  "notificationAccessLabel": "Upatikanaji wa arifa",
+  "notificationAccessDesc": "Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa",
+  "smsAccessLabel": "Upatikanaji wa SMS",
+  "smsAccessDesc": "Soma SMS za pesa mtandaoni kama mbadala endapo arifa zimezimwa",
+  "enableAccess": "Washa",
+  "granted": "Imetolewa",
+  "setupComplete": "Maliza",
+
+  "aiSection": "Mapato AI",
+  "groqApiKey": "Ufunguo wa Groq API",
+  "groqApiKeyDesc": "Pata ufunguo bila malipo katika console.groq.com",
+  "enterApiKey": "Weka ufunguo wako wa API",
+  "aiModel": "Mfumo wa AI",
+  "aiModelDesc": "Chagua mfumo wa kutumia"
 }
 

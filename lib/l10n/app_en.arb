@@ -251,6 +251,23 @@
   "allowSmsTitle": "Allow Mapato to read your SMS?",
   "allowSmsBody": "Mapato reads your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa SMS messages to automatically record transactions. Your messages stay on your device.",
   "allow": "Allow",
-  "notNow": "Not now"
+  "notNow": "Not now",
+
+  "permissionsTitle": "Set up capture",
+  "permissionsSubtitle": "Allow Mapato to read your mobile-money notifications and SMS so it can automatically record transactions.",
+  "notificationAccessLabel": "Notification access",
+  "notificationAccessDesc": "Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications",
+  "smsAccessLabel": "SMS access",
+  "smsAccessDesc": "Read mobile-money SMS as a backup when notifications are off",
+  "enableAccess": "Enable",
+  "granted": "Granted",
+  "setupComplete": "Done",
+
+  "aiSection": "Mapato AI",
+  "groqApiKey": "Groq API Key",
+  "groqApiKeyDesc": "Get a free key at console.groq.com",
+  "enterApiKey": "Enter your API key",
+  "aiModel": "AI Model",
+  "aiModelDesc": "Choose which model to use"
 }
 

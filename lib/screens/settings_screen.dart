@@ -14,6 +14,13 @@ import 'package:provider/provider.dart';
 const _captureChannel = MethodChannel('tz.mapato/capture');
 const _smsPrefKey = 'sms_capture_enabled';
 
+const List<String> _groqModels = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'gemma2-9b-it',
+  'mixtral-8x7b-32768',
+];
+
 class _CaptureSource {
   final String label;
   final String pkg;
@@ -47,6 +54,10 @@ class _SettingsScreenState extends State<SettingsScreen>
   final Set<String> _captureSet = {};
   bool _captureLoading = true;
 
+  String _groqKey = '';
+  String _groqModel = '';
+  bool _aiLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +86,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     final notif = await isNotificationListenerEnabled();
     await _initSmsState();
     await _initCaptureState();
+    await _initAiState();
     if (!mounted) return;
     setState(() => _notifEnabled = notif);
   }
@@ -96,6 +108,27 @@ class _SettingsScreenState extends State<SettingsScreen>
         ..addAll(set);
       _captureLoading = false;
     });
+  }
+
+  Future<void> _initAiState() async {
+    final key = await getPrefString('groq_api_key');
+    final model = await getPrefString('groq_model');
+    if (!mounted) return;
+    setState(() {
+      _groqKey = key;
+      _groqModel = model.isEmpty ? _groqModels.first : model;
+      _aiLoading = false;
+    });
+  }
+
+  Future<void> _saveGroqKey(String value) async {
+    await setPrefString('groq_api_key', value);
+    setState(() => _groqKey = value);
+  }
+
+  Future<void> _saveGroqModel(String value) async {
+    await setPrefString('groq_model', value);
+    setState(() => _groqModel = value);
   }
 
   Future<void> _setCaptureAll(bool value) async {
@@ -463,7 +496,98 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
 
-        // â”€â”€ Data â”€â”€
+        // ─── Mapato AI ───
+        _sectionHeader(s.aiSection),
+        Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                leading: const Icon(Icons.key, size: 22),
+                title: Text(s.groqApiKey, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  _groqKey.isEmpty ? s.enterApiKey : '${_groqKey.substring(0, _groqKey.length.clamp(0, 8))}...',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                trailing: const Icon(Icons.chevron_right, size: 20),
+                onTap: () {
+                  final ctrl = TextEditingController(text: _groqKey);
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(s.groqApiKey),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(s.groqApiKeyDesc,
+                              style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant)),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: ctrl,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              hintText: s.enterApiKey,
+                              border: const OutlineInputBorder(),
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: Text(s.cancel),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            _saveGroqKey(ctrl.text.trim());
+                            Navigator.pop(ctx);
+                          },
+                          child: Text(s.save),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                leading: const Icon(Icons.smart_toy_outlined, size: 22),
+                title: Text(s.aiModel, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  _groqModel,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                trailing: const Icon(Icons.chevron_right, size: 20),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => SimpleDialog(
+                      title: Text(s.aiModel),
+                      children: _groqModels.map((m) => RadioListTile<String>(
+                        title: Text(m, style: const TextStyle(fontSize: 13)),
+                        value: m,
+                        groupValue: _groqModel,
+                        onChanged: (v) {
+                          if (v != null) {
+                            _saveGroqModel(v);
+                            Navigator.pop(ctx);
+                          }
+                        },
+                      )).toList(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // â"€â"€ Data â"€â"€
         _sectionHeader(s.dataSection),
         Card(
           child: Column(

@@ -1147,6 +1147,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get notNow;
+
+  /// No description provided for @permissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up capture'**
+  String get permissionsTitle;
+
+  /// No description provided for @permissionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Mapato to read your mobile-money notifications and SMS so it can automatically record transactions.'**
+  String get permissionsSubtitle;
+
+  /// No description provided for @notificationAccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification access'**
+  String get notificationAccessLabel;
+
+  /// No description provided for @notificationAccessDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications'**
+  String get notificationAccessDesc;
+
+  /// No description provided for @smsAccessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS access'**
+  String get smsAccessLabel;
+
+  /// No description provided for @smsAccessDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Read mobile-money SMS as a backup when notifications are off'**
+  String get smsAccessDesc;
+
+  /// No description provided for @enableAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get enableAccess;
+
+  /// No description provided for @granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get granted;
+
+  /// No description provided for @setupComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get setupComplete;
+
+  /// No description provided for @aiSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Mapato AI'**
+  String get aiSection;
+
+  /// No description provided for @groqApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Groq API Key'**
+  String get groqApiKey;
+
+  /// No description provided for @groqApiKeyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a free key at console.groq.com'**
+  String get groqApiKeyDesc;
+
+  /// No description provided for @enterApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your API key'**
+  String get enterApiKey;
+
+  /// No description provided for @aiModel.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Model'**
+  String get aiModel;
+
+  /// No description provided for @aiModelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose which model to use'**
+  String get aiModelDesc;
 }
 
 class _AppLocalizationsDelegate

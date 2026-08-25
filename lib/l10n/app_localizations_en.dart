@@ -579,4 +579,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notNow => 'Not now';
+
+  @override
+  String get permissionsTitle => 'Set up capture';
+
+  @override
+  String get permissionsSubtitle =>
+      'Allow Mapato to read your mobile-money notifications and SMS so it can automatically record transactions.';
+
+  @override
+  String get notificationAccessLabel => 'Notification access';
+
+  @override
+  String get notificationAccessDesc =>
+      'Capture M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa notifications';
+
+  @override
+  String get smsAccessLabel => 'SMS access';
+
+  @override
+  String get smsAccessDesc =>
+      'Read mobile-money SMS as a backup when notifications are off';
+
+  @override
+  String get enableAccess => 'Enable';
+
+  @override
+  String get granted => 'Granted';
+
+  @override
+  String get setupComplete => 'Done';
+
+  @override
+  String get aiSection => 'Mapato AI';
+
+  @override
+  String get groqApiKey => 'Groq API Key';
+
+  @override
+  String get groqApiKeyDesc => 'Get a free key at console.groq.com';
+
+  @override
+  String get enterApiKey => 'Enter your API key';
+
+  @override
+  String get aiModel => 'AI Model';
+
+  @override
+  String get aiModelDesc => 'Choose which model to use';
 }

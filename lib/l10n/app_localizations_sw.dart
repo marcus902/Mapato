@@ -578,4 +578,53 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get notNow => 'Sio sasa';
+
+  @override
+  String get permissionsTitle => 'Weka uchukuzi';
+
+  @override
+  String get permissionsSubtitle =>
+      'Ruhusu Mapato kusoma arifa na SMS za pesa mtandaoni ili irekodi miamala kiotomatiki.';
+
+  @override
+  String get notificationAccessLabel => 'Upatikanaji wa arifa';
+
+  @override
+  String get notificationAccessDesc =>
+      'Kukamata arifa za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa';
+
+  @override
+  String get smsAccessLabel => 'Upatikanaji wa SMS';
+
+  @override
+  String get smsAccessDesc =>
+      'Soma SMS za pesa mtandaoni kama mbadala endapo arifa zimezimwa';
+
+  @override
+  String get enableAccess => 'Washa';
+
+  @override
+  String get granted => 'Imetolewa';
+
+  @override
+  String get setupComplete => 'Maliza';
+
+  @override
+  String get aiSection => 'Mapato AI';
+
+  @override
+  String get groqApiKey => 'Ufunguo wa Groq API';
+
+  @override
+  String get groqApiKeyDesc =>
+      'Pata ufunguo bila malipo katika console.groq.com';
+
+  @override
+  String get enterApiKey => 'Weka ufunguo wako wa API';
+
+  @override
+  String get aiModel => 'Mfumo wa AI';
+
+  @override
+  String get aiModelDesc => 'Chagua mfumo wa kutumia';
 }
