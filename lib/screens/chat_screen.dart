@@ -13,10 +13,9 @@ import 'package:provider/provider.dart';
 const _groqEndpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
 const List<String> _groqModels = [
-  'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant',
-  'gemma2-9b-it',
-  'mixtral-8x7b-32768',
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.6-27b',
 ];
 
 class _Msg {
