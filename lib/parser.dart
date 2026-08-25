@@ -146,60 +146,82 @@ String _detectDirection(String text) {
 }
 
 String? _detectCounterparty(String text) {
-  // 1. "kwa [Name]" — Swahili pattern
-  final m1 = RegExp(r"kwa\s+([A-Z][A-Za-z .'-]{2,30})").firstMatch(text);
+  // 1. "kwenda [Name/Number]" — Swahili outgoing (most common in M-Pesa)
+  final m1 = RegExp(r"kwenda\s+(.+?)(?:\.|,|\s+salio|\s+namba|\s+kumbuka)", caseSensitive: false).firstMatch(text);
   if (m1 != null) {
-    var name = m1.group(1)!.trim();
-    name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
-    if (name.isNotEmpty) return name;
+    final raw = m1.group(1)!.trim();
+    final cleaned = _cleanCounterparty(raw);
+    if (cleaned != null) return cleaned;
   }
-  // 2. "from [Name]" — English incoming
-  final m2 = RegExp(r"from\s+([A-Z][A-Za-z .'-]{2,30})").firstMatch(text);
+  // 2. "kutoka [Name/Number]" — Swahili incoming
+  final m2 = RegExp(r"kutoka\s+(.+?)(?:\.|,|\s+salio|\s+namba|\s+kumbuka)", caseSensitive: false).firstMatch(text);
   if (m2 != null) {
-    var name = m2.group(1)!.trim();
-    name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
-    if (name.isNotEmpty) return name;
+    final raw = m2.group(1)!.trim();
+    final cleaned = _cleanCounterparty(raw);
+    if (cleaned != null) return cleaned;
   }
-  // 3. "to [Name]" — English outgoing
-  final m3 = RegExp(r"to\s+([A-Z][A-Za-z .'-]{2,30})").firstMatch(text);
+  // 3. "kwa [Name/Number]" — Swahili general
+  final m3 = RegExp(r"kwa\s+(.+?)(?:\.|,|\s+salio|\s+namba|\s+kumbuka)", caseSensitive: false).firstMatch(text);
   if (m3 != null) {
-    var name = m3.group(1)!.trim();
-    name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
-    if (name.isNotEmpty) return name;
+    final raw = m3.group(1)!.trim();
+    final cleaned = _cleanCounterparty(raw);
+    if (cleaned != null) return cleaned;
   }
-  // 4. "kutoka [Name]" / "kwenda [Name]" — Swahili
-  final m4 = RegExp(r"kutoka\s+([A-Z][A-Za-z .'-]{2,30})").firstMatch(text);
+  // 4. "from [Name/Number]" — English incoming
+  final m4 = RegExp(r"from\s+(.+?)(?:\.|,|\s+balance|\s+ref)", caseSensitive: false).firstMatch(text);
   if (m4 != null) {
-    var name = m4.group(1)!.trim();
-    name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
-    if (name.isNotEmpty) return name;
+    final raw = m4.group(1)!.trim();
+    final cleaned = _cleanCounterparty(raw);
+    if (cleaned != null) return cleaned;
   }
-  final m5 = RegExp(r"kwenda\s+([A-Z][A-Za-z .'-]{2,30})").firstMatch(text);
+  // 5. "to [Name/Number]" — English outgoing
+  final m5 = RegExp(r"(?:sent|transfer(?:red)?|paid|pay)\s+to\s+(.+?)(?:\.|,|\s+balance|\s+ref)", caseSensitive: false).firstMatch(text);
   if (m5 != null) {
-    var name = m5.group(1)!.trim();
-    name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
-    if (name.isNotEmpty) return name;
+    final raw = m5.group(1)!.trim();
+    final cleaned = _cleanCounterparty(raw);
+    if (cleaned != null) return cleaned;
   }
-  // 5. "Jina: [Name]" — Tanzanian receipt format
-  final m6 = RegExp(r"jina[:\s]+([A-Z][A-Za-z .'-]{2,30})", caseSensitive: false).firstMatch(text);
+  // 6. "Jina: [Name]" — Tanzanian receipt format
+  final m6 = RegExp(r"jina[:\s]+([A-Za-z .'-]{2,40})", caseSensitive: false).firstMatch(text);
   if (m6 != null) {
     var name = m6.group(1)!.trim();
     name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
     if (name.isNotEmpty) return name;
   }
-  // 6. Phone number: +255 712 345 678 or 0712 345 678
-  final m7 = RegExp(r"(\+?255[\d\s-]{9,13}|0\d{2,3}[\s-]?\d{3}[\s-]?\d{4})").firstMatch(text);
-  if (m7 != null) {
-    return m7.group(1)!.trim();
-  }
   // 7. "Name: [Name]" — generic label
-  final m8 = RegExp(r"name[:\s]+([A-Z][A-Za-z .'-]{2,30})", caseSensitive: false).firstMatch(text);
-  if (m8 != null) {
-    var name = m8.group(1)!.trim();
+  final m7 = RegExp(r"name[:\s]+([A-Za-z .'-]{2,40})", caseSensitive: false).firstMatch(text);
+  if (m7 != null) {
+    var name = m7.group(1)!.trim();
     name = name.replaceFirst(RegExp(r'[.,].*$'), '').trim();
     if (name.isNotEmpty) return name;
   }
+  // 8. Standalone phone number: +255 712 345 678 or 0712 345 678
+  final m8 = RegExp(r"(\+?255[\d\s-]{9,15}|0\d{2,3}[\s-]?\d{3}[\s-]?\d{3,4})").firstMatch(text);
+  if (m8 != null) {
+    return m8.group(1)!.trim();
+  }
   return null;
+}
+
+/// Clean a raw counterparty string extracted after kwenda/kutoka/kwa.
+/// Strips phone numbers in parentheses, extracts just the name, etc.
+String? _cleanCounterparty(String raw) {
+  // Strip leading/trailing phone numbers in parens: "JUMBE ALLY (0712345678)" → "JUMBE ALLY"
+  var cleaned = raw.replaceAll(RegExp(r'\(?\+?0?\d{9,13}\)?'), '').trim();
+  // Strip trailing phone numbers: "JUMBE ALLY 0712345678" → "JUMBE ALLY"
+  cleaned = cleaned.replaceAll(RegExp(r'\s+\d{9,13}\s*$'), '').trim();
+  // Strip "namba" prefix: "namba 123456" → "123456"
+  cleaned = cleaned.replaceAll(RegExp(r'^namba\s+', caseSensitive: false), '').trim();
+  // If only digits remain, it's a phone/account number
+  if (RegExp(r'^\+?[\d\s-]{7,15}$').hasMatch(cleaned)) {
+    return cleaned.replaceAll(RegExp(r'\s'), '');
+  }
+  // If empty after stripping, return null
+  if (cleaned.isEmpty) return null;
+  // Remove trailing punctuation
+  cleaned = cleaned.replaceFirst(RegExp(r'[.,;:]+$'), '').trim();
+  if (cleaned.length < 2) return null;
+  return cleaned;
 }
 
 /// Words/phrases that indicate a genuine mobile-money transaction message.
