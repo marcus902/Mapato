@@ -4,7 +4,7 @@ import 'package:mapato/theme.dart';
 
 final _fmt = NumberFormat('#,##0', 'en_US');
 
-String tzs(double value) => 'TZS ${_fmt.format(value.round())}';
+String tzs(double value) => 'Tsh ${_fmt.format(value.round())}';
 
 /// Category names that represent money moving into savings (your own money,
 /// treated separately from income/spending).

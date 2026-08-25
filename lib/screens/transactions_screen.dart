@@ -719,7 +719,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
             controller: _amount,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: 'Amount (TZS)',
+              labelText: 'Amount (Tsh)',
               prefixIcon: Icon(Icons.money_rounded),
             ),
           ),

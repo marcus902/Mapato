@@ -78,7 +78,7 @@ class _AddScreenState extends State<AddScreen> {
             controller: _amount,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
-              labelText: 'Amount (TZS)',
+              labelText: 'Amount (Tsh)',
               prefixIcon: Icon(Icons.money_rounded),
             ),
           ),

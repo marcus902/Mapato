@@ -93,10 +93,10 @@ class _ChatScreenState extends State<ChatScreen> {
     final top = cats.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final topStr = top.take(3).map((e) => '${e.key} ${tzs(e.value)}').join(', ');
-    return 'User financial summary (this month, TZS): '
+    return 'User financial summary (this month, Tsh): '
         'income ${tzs(income)}, expenses ${tzs(expense)}, saved ${tzs(saved)}. '
         'Top spending categories: ${topStr.isEmpty ? 'none' : topStr}. '
-        'Currency is Tanzanian Shillings (TZS). Networks: M-Pesa, Mixx by Yas, '
+        'Currency is Tanzanian Shillings (Tsh). Networks: M-Pesa, Mixx by Yas, '
         'Airtel Money, HaloPesa, AzamPesa.';
   }
 
@@ -211,7 +211,7 @@ Rules:
   for a PIN.
 - You only see a monthly SUMMARY of the user's money, never individual
   transactions. If you don't know a specific past transaction, say so.
-- Match the user's language (English or Swahili). Use TZS.
+- Match the user's language (English or Swahili). Use Tsh.
 
 Summary you may use:
 ${_buildContext()}
