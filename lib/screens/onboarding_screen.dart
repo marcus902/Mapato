@@ -7,6 +7,8 @@ import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
 import 'package:provider/provider.dart';
 
+const _captureChannel = MethodChannel('tz.mapato/capture');
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -109,6 +111,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     // Check if granted after dialog
     final granted = await permissionsChannel.invokeMethod<bool>('checkSmsPermission') ?? false;
     if (!mounted) return;
+    if (granted) {
+      // Save the pref and start the SMS service so Settings shows it as enabled
+      await setPrefBool('sms_capture_enabled', true);
+      try {
+        await _captureChannel.invokeMethod('startSmsService');
+      } on PlatformException {
+        // ignored
+      }
+    }
     setState(() => _smsEnabled = granted);
   }
 
