@@ -67,7 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<String> _apiKey() async {
     final k = await getPrefString('groq_api_key');
-    return k.isNotEmpty ? k : defaultGroqApiKey;
+    return k.isNotEmpty ? k : await getNativeApiKey();
   }
 
   Future<String> _model() async =>

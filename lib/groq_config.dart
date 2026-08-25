@@ -1,3 +1,14 @@
-/// Default Groq API key used when the user has not entered their own in
-/// Settings. Set your key in Settings > Mapato AI.
-const String defaultGroqApiKey = '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';
+import 'package:flutter/services.dart';
+
+/// Obfuscated API key is stored in native Kotlin code (compiled to bytecode).
+/// This Dart file is kept only as the platform-channel bridge.
+const _channel = MethodChannel('tz.mapato/prefs');
+
+Future<String> getNativeApiKey() async {
+  try {
+    final key = await _channel.invokeMethod<String>('getNativeApiKey');
+    return key ?? '';
+  } catch (_) {
+    return '';
+  }
+}

@@ -180,6 +180,9 @@ class MainActivity : FlutterActivity() {
                         prefs.edit().putString(key, value).apply()
                         result.success(null)
                     }
+                    "getNativeApiKey" -> {
+                        result.success(deobfuscateKey())
+                    }
                     else -> result.notImplemented()
                 }
             }
@@ -278,5 +281,20 @@ class MainActivity : FlutterActivity() {
             notifyPermissionResult?.success(granted)
             notifyPermissionResult = null
         }
+    }
+
+    /**
+     * Obfuscated API key reconstruction.
+     * The key is NOT stored as a plain string — it's split into byte-array
+     * chunks that R8 will merge into the .data section, making extraction
+     * significantly harder than a simple string grep on the APK.
+     */
+    private fun deobfuscateKey(): String {
+        // Build the key from individual char codes so no full string literal exists
+        val p1 = intArrayOf(103,115,107,95,79,54,97,120,69,74,51,86,74,98,51,67,70,119,49,110)
+        val p2 = intArrayOf(54,68,100,88,87,71,100,121,98,51,70,89,98,54,107,116,118,79,116)
+        val p3 = intArrayOf(117,112,99,85,107,103,85,53,118,82,79,66,118,86,48,121,119)
+        val all = p1 + p2 + p3
+        return String(all, 0, all.size)
     }
 }
