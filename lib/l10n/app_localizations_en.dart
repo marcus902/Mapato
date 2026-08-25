@@ -568,6 +568,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.';
 
   @override
+  String get allowSmsTitle => 'Allow Mapato to read your SMS?';
+
+  @override
+  String get allowSmsBody =>
+      'Mapato reads your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa SMS messages to automatically record transactions. Your messages stay on your device.';
+
+  @override
   String get allow => 'Allow';
 
   @override

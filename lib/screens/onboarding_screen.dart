@@ -60,19 +60,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         .pushReplacement(MaterialPageRoute(builder: (_) => const Root()));
   }
 
-  Future<void> _requestNotificationsAndFinish() async {
-    // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
-    await requestPostNotificationPermission();
+  Future<void> _showSmsDialog() async {
+    final s = AppLocalizations.of(context);
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.sms_outlined, size: 40, color: AppColors.primary),
+        title: Text(s.allowSmsTitle),
+        content: Text(s.allowSmsBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.allow),
+          ),
+        ],
+      ),
+    );
 
-    // Open notification listener settings so user can manually enable it
-    try {
-      await settingsChannel.invokeMethod('openNotificationSettings');
-    } on PlatformException {
-      // ignored
+    if (result == true) {
+      await requestSmsPermission();
     }
-
-    // Finish onboarding and go to app
-    await _finish();
+    // After SMS dialog, show notification dialog
+    await _showNotificationDialog();
   }
 
   Future<void> _showNotificationDialog() async {
@@ -98,18 +112,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
 
     if (result == true) {
-      await _requestNotificationsAndFinish();
-    } else {
-      await _finish();
+      // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
+      await requestPostNotificationPermission();
+      // Open notification listener settings so user can manually enable it
+      try {
+        await settingsChannel.invokeMethod('openNotificationSettings');
+      } on PlatformException {
+        // ignored
+      }
     }
-  }
 
-  Future<void> _openNotifications() async {
-    try {
-      await settingsChannel.invokeMethod('openNotificationSettings');
-    } on PlatformException {
-      // ignored
-    }
+    await _finish();
   }
 
   @override
@@ -232,7 +245,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            onPressed: _showNotificationDialog,
+                            onPressed: _showSmsDialog,
                             child: Text(s.getStarted,
                                 style: const TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w700)),

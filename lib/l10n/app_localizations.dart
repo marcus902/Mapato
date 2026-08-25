@@ -1124,6 +1124,18 @@ abstract class AppLocalizations {
   /// **'Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.'**
   String get allowNotificationsBody;
 
+  /// No description provided for @allowSmsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Mapato to read your SMS?'**
+  String get allowSmsTitle;
+
+  /// No description provided for @allowSmsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Mapato reads your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa SMS messages to automatically record transactions. Your messages stay on your device.'**
+  String get allowSmsBody;
+
   /// No description provided for @allow.
   ///
   /// In en, this message translates to:

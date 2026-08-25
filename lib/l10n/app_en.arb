@@ -248,6 +248,8 @@
 
   "allowNotificationsTitle": "Allow Mapato to send you notifications?",
   "allowNotificationsBody": "Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.",
+  "allowSmsTitle": "Allow Mapato to read your SMS?",
+  "allowSmsBody": "Mapato reads your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa SMS messages to automatically record transactions. Your messages stay on your device.",
   "allow": "Allow",
   "notNow": "Not now"
 }

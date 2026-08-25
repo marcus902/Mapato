@@ -88,4 +88,16 @@ Future<bool> requestPostNotificationPermission() async {
   }
 }
 
+/// Requests READ_SMS + RECEIVE_SMS permissions via the Android runtime dialog.
+Future<bool> requestSmsPermission() async {
+  try {
+    final granted =
+        await permissionsChannel.invokeMethod<bool>('requestSmsPermission') ??
+            false;
+    return granted;
+  } on PlatformException {
+    return false;
+  }
+}
+
 

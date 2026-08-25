@@ -567,6 +567,13 @@ class AppLocalizationsSw extends AppLocalizations {
       'Mapato inahitaji upatikanaji wa arifa ili kukamata kiotomatiki miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa inapotokea.';
 
   @override
+  String get allowSmsTitle => 'Ruhusu Mapato kusoma SMS zako?';
+
+  @override
+  String get allowSmsBody =>
+      'Mapato inasoma SMS za M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa ili kurekodi miamala kiotomatiki. Ujumbe wako unabaki kwenye kifaa chako.';
+
+  @override
   String get allow => 'Ruhusu';
 
   @override
