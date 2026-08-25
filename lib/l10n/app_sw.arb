@@ -244,6 +244,11 @@
   "sampleMessage": "Ujumbe wa mfano",
   "noMatch": "Hakuna mechi -- parser imerudisha null. Sasisha regex.",
   "directionLabel": "Mwelekeo",
-  "counterparty": "Mshirika"
+  "counterparty": "Mshirika",
+
+  "allowNotificationsTitle": "Ruhusu Mapato kukutumia arifa?",
+  "allowNotificationsBody": "Mapato inahitaji upatikanaji wa arifa ili kukamata kiotomatiki miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa inapotokea.",
+  "allow": "Ruhusu",
+  "notNow": "Sio sasa"
 }
 

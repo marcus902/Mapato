@@ -558,4 +558,17 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get counterparty => 'Mshirika';
+
+  @override
+  String get allowNotificationsTitle => 'Ruhusu Mapato kukutumia arifa?';
+
+  @override
+  String get allowNotificationsBody =>
+      'Mapato inahitaji upatikanaji wa arifa ili kukamata kiotomatiki miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa inapotokea.';
+
+  @override
+  String get allow => 'Ruhusu';
+
+  @override
+  String get notNow => 'Sio sasa';
 }

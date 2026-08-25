@@ -60,6 +60,50 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         .pushReplacement(MaterialPageRoute(builder: (_) => const Root()));
   }
 
+  Future<void> _requestNotificationsAndFinish() async {
+    // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
+    await requestPostNotificationPermission();
+
+    // Open notification listener settings so user can manually enable it
+    try {
+      await settingsChannel.invokeMethod('openNotificationSettings');
+    } on PlatformException {
+      // ignored
+    }
+
+    // Finish onboarding and go to app
+    await _finish();
+  }
+
+  Future<void> _showNotificationDialog() async {
+    final s = AppLocalizations.of(context);
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.notifications_active_outlined, size: 40, color: AppColors.primary),
+        title: Text(s.allowNotificationsTitle),
+        content: Text(s.allowNotificationsBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.notNow),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.allow),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      await _requestNotificationsAndFinish();
+    } else {
+      await _finish();
+    }
+  }
+
   Future<void> _openNotifications() async {
     try {
       await settingsChannel.invokeMethod('openNotificationSettings');
@@ -177,30 +221,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: isLast
                   ? Column(
                       children: [
-                        FilledButton.icon(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppColors.primary,
-                          ),
-                          onPressed: _openNotifications,
-                          icon: const Icon(Icons.notifications_active_outlined),
-                          label: Text(s.enableNotificationAccess),
-                        ),
-                        const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white),
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: AppColors.primary,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            onPressed: _finish,
-                            child: Text(s.getStarted),
+                            onPressed: _showNotificationDialog,
+                            child: Text(s.getStarted,
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w700)),
                           ),
                         ),
                       ],

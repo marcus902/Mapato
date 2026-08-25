@@ -558,4 +558,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get counterparty => 'Counterparty';
+
+  @override
+  String get allowNotificationsTitle =>
+      'Allow Mapato to send you notifications?';
+
+  @override
+  String get allowNotificationsBody =>
+      'Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get notNow => 'Not now';
 }

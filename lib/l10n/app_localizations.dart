@@ -1111,6 +1111,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Counterparty'**
   String get counterparty;
+
+  /// No description provided for @allowNotificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Mapato to send you notifications?'**
+  String get allowNotificationsTitle;
+
+  /// No description provided for @allowNotificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.'**
+  String get allowNotificationsBody;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @notNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get notNow;
 }
 
 class _AppLocalizationsDelegate

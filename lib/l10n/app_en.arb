@@ -244,6 +244,11 @@
   "sampleMessage": "Sample message",
   "noMatch": "No match -- parser returned null. Tune the regexes.",
   "directionLabel": "Direction",
-  "counterparty": "Counterparty"
+  "counterparty": "Counterparty",
+
+  "allowNotificationsTitle": "Allow Mapato to send you notifications?",
+  "allowNotificationsBody": "Mapato needs notification access to automatically capture your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions as they happen.",
+  "allow": "Allow",
+  "notNow": "Not now"
 }
 
