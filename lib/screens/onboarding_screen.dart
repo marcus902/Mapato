@@ -26,12 +26,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   List<_Page> _pages(BuildContext context) => [
     _Page(
-      icon: Icons.language_rounded,
-      title: AppLocalizations.of(context).onboardingLanguageTitle,
-      body: AppLocalizations.of(context).onboardingLanguageSubtitle,
-      isLanguagePicker: true,
-    ),
-    _Page(
       icon: Icons.account_balance_wallet_rounded,
       title: AppLocalizations.of(context).onboardingWelcomeTitle,
       body: AppLocalizations.of(context).onboardingWelcomeBody,
@@ -50,6 +44,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       icon: Icons.insights_rounded,
       title: AppLocalizations.of(context).onboardingInsightsTitle,
       body: AppLocalizations.of(context).onboardingInsightsBody,
+    ),
+    _Page(
+      icon: Icons.language_rounded,
+      title: AppLocalizations.of(context).onboardingLanguageTitle,
+      body: AppLocalizations.of(context).onboardingLanguageSubtitle,
+      isLanguagePicker: true,
     ),
   ];
 
@@ -89,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
                           fontSize: 18)),
-                  if (!isLast && _page > 0)
+                  if (_page > 0 && !isLast)
                     TextButton(
                       onPressed: _finish,
                       child: Text(s.skip,
@@ -109,10 +109,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     return _LanguagePickerPage(
                       onSelectLanguage: (locale) {
                         context.read<AppState>().setLocale(locale);
-                        _controller.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease,
-                        );
                       },
                     );
                   }
@@ -178,53 +174,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-              child: _page == 0
-                  ? null
-                  : isLast
-                      ? Column(
-                          children: [
-                            FilledButton.icon(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: AppColors.primary,
-                              ),
-                              onPressed: _openNotifications,
-                              icon: const Icon(Icons.notifications_active_outlined),
-                              label: Text(s.enableNotificationAccess),
-                            ),
-                            const SizedBox(height: 12),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  side: const BorderSide(color: Colors.white),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 16),
-                                ),
-                                onPressed: _finish,
-                                child: Text(s.getStarted),
-                              ),
-                            ),
-                          ],
-                        )
-                      : SizedBox(
+              child: isLast
+                  ? Column(
+                      children: [
+                        FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppColors.primary,
+                          ),
+                          onPressed: _openNotifications,
+                          icon: const Icon(Icons.notifications_active_outlined),
+                          label: Text(s.enableNotificationAccess),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
                           width: double.infinity,
-                          child: FilledButton(
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: AppColors.primary,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16),
                             ),
-                            onPressed: () => _controller.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.ease,
-                            ),
-                            child: Text(s.next),
+                            onPressed: _finish,
+                            child: Text(s.getStarted),
                           ),
                         ),
+                      ],
+                    )
+                  : SizedBox(
+                      width: double.infinity,
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppColors.primary,
+                        ),
+                        onPressed: () => _controller.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        ),
+                        child: Text(s.next),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -269,13 +263,11 @@ class _LanguagePickerPage extends StatelessWidget {
           const SizedBox(height: 32),
           _LangButton(
             label: 'English',
-            flag: 'ðŸ‡¬ðŸ‡§',
             onTap: () => onSelectLanguage(const Locale('en')),
           ),
           const SizedBox(height: 14),
           _LangButton(
             label: 'Kiswahili',
-            flag: 'ðŸ‡¹ðŸ‡¿',
             onTap: () => onSelectLanguage(const Locale('sw')),
           ),
         ],
@@ -286,9 +278,8 @@ class _LanguagePickerPage extends StatelessWidget {
 
 class _LangButton extends StatelessWidget {
   final String label;
-  final String flag;
   final VoidCallback onTap;
-  const _LangButton({required this.label, required this.flag, required this.onTap});
+  const _LangButton({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -304,16 +295,9 @@ class _LangButton extends StatelessWidget {
           ),
         ),
         onPressed: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(flag, style: const TextStyle(fontSize: 22)),
-            const SizedBox(width: 12),
-            Text(label,
-                style: const TextStyle(
-                    fontSize: 17, fontWeight: FontWeight.w700)),
-          ],
-        ),
+        child: Text(label,
+            style: const TextStyle(
+                fontSize: 17, fontWeight: FontWeight.w700)),
       ),
     );
   }

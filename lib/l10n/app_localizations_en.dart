@@ -174,7 +174,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingLanguageTitle => 'Choose your language';
 
   @override
-  String get onboardingLanguageSubtitle => 'Chagua lugha yako';
+  String get onboardingLanguageSubtitle =>
+      'You can change this later in Settings';
 
   @override
   String get english => 'English';

@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingLanguageSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Chagua lugha yako'**
+  /// **'You can change this later in Settings'**
   String get onboardingLanguageSubtitle;
 
   /// No description provided for @english.
