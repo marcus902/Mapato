@@ -20,6 +20,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   int _page = 0;
 
   bool _notifEnabled = false;
+  bool _smsEnabled = false;
 
   @override
   void initState() {
@@ -41,8 +42,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   Future<void> _refreshPermissions() async {
     final notif = await isNotificationListenerEnabled();
+    final sms = await permissionsChannel.invokeMethod<bool>('checkSmsPermission') ?? false;
     if (!mounted) return;
-    setState(() => _notifEnabled = notif);
+    setState(() {
+      _notifEnabled = notif;
+      _smsEnabled = sms;
+    });
   }
 
   List<_Page> _pages(BuildContext context) => [
@@ -136,6 +141,21 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     }
   }
 
+  Future<void> _enableSmsAccess() async {
+    await requestSmsPermission();
+    final granted = await permissionsChannel.invokeMethod<bool>('checkSmsPermission') ?? false;
+    if (!mounted) return;
+    if (granted) {
+      await setPrefBool('sms_capture_enabled', true);
+      try {
+        await MethodChannel('tz.mapato/capture').invokeMethod('startSmsService');
+      } on PlatformException {
+        // ignored
+      }
+    }
+    setState(() => _smsEnabled = granted);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = _pages(context);
@@ -187,7 +207,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   if (p.isPermissions) {
                     return _PermissionsPage(
                       notifEnabled: _notifEnabled,
+                      smsEnabled: _smsEnabled,
                       onEnableNotif: _enableNotificationAccess,
+                      onEnableSms: _enableSmsAccess,
                     );
                   }
                   return Padding(
@@ -319,11 +341,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
 class _PermissionsPage extends StatelessWidget {
   final bool notifEnabled;
+  final bool smsEnabled;
   final VoidCallback onEnableNotif;
+  final VoidCallback onEnableSms;
 
   const _PermissionsPage({
     required this.notifEnabled,
+    required this.smsEnabled,
     required this.onEnableNotif,
+    required this.onEnableSms,
   });
 
   @override
@@ -372,6 +398,16 @@ class _PermissionsPage extends StatelessWidget {
             desc: s.notificationAccessDesc,
             granted: notifEnabled,
             onEnable: onEnableNotif,
+            enableLabel: s.enableAccess,
+            grantedLabel: s.granted,
+          ),
+          const SizedBox(height: 12),
+          _PermCard(
+            icon: Icons.sms_outlined,
+            label: s.smsAccessLabel,
+            desc: s.smsAccessDesc,
+            granted: smsEnabled,
+            onEnable: onEnableSms,
             enableLabel: s.enableAccess,
             grantedLabel: s.granted,
           ),
