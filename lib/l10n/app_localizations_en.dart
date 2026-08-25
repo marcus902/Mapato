@@ -611,6 +611,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupComplete => 'Done';
 
   @override
+  String get notifAccessDialogTitle => 'Enable notification access';
+
+  @override
+  String get notifAccessDialogBody =>
+      '1. Tap Open Settings below\n2. Find Mapato in the list\n3. Tap it and toggle ON\n4. Confirm the warning\n5. Press back to return to Mapato\n\nIf Mapato is not listed, the app may need to be opened again after install.';
+
+  @override
   String get aiSection => 'Mapato AI';
 
   @override

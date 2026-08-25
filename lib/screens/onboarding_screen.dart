@@ -96,6 +96,38 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   Future<void> _enableNotificationAccess() async {
+    // First check if already enabled
+    final already = await isNotificationListenerEnabled();
+    if (already) {
+      if (!mounted) return;
+      setState(() => _notifEnabled = true);
+      return;
+    }
+
+    // Show a guidance dialog before opening settings
+    final s = AppLocalizations.of(context);
+    final proceed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.info_outline, size: 36, color: Colors.white70),
+        title: Text(s.notifAccessDialogTitle),
+        content: Text(s.notifAccessDialogBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.openSettings),
+          ),
+        ],
+      ),
+    );
+
+    if (proceed != true) return;
+
     // Request POST_NOTIFICATIONS permission (Android 13+ system dialog)
     await requestPostNotificationPermission();
     // Open notification listener settings so user can manually enable it

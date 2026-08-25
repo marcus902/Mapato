@@ -1202,6 +1202,18 @@ abstract class AppLocalizations {
   /// **'Done'**
   String get setupComplete;
 
+  /// No description provided for @notifAccessDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notification access'**
+  String get notifAccessDialogTitle;
+
+  /// No description provided for @notifAccessDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Tap Open Settings below\n2. Find Mapato in the list\n3. Tap it and toggle ON\n4. Confirm the warning\n5. Press back to return to Mapato\n\nIf Mapato is not listed, the app may need to be opened again after install.'**
+  String get notifAccessDialogBody;
+
   /// No description provided for @aiSection.
   ///
   /// In en, this message translates to:

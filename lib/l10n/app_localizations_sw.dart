@@ -610,6 +610,13 @@ class AppLocalizationsSw extends AppLocalizations {
   String get setupComplete => 'Maliza';
 
   @override
+  String get notifAccessDialogTitle => 'Washesha upatikanaji wa arifa';
+
+  @override
+  String get notifAccessDialogBody =>
+      '1. Gusa Fungua Mipangilio hapa chini\n2. Tafuta Mapato kwenye orodha\n3. Gusa na weka ON\n4. Thibitisha onyo\n5. Bofya kurudi Mapato\n\nIkiko Mapato haijaorodheshwa, programu inahitaji kufunguliwa tena baada ya usakinishaji.';
+
+  @override
   String get aiSection => 'Mapato AI';
 
   @override
