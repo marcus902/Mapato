@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/parser.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:provider/provider.dart';
@@ -21,26 +22,25 @@ class _ParserLabScreenState extends State<ParserLabScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final state = context.watch<AppState>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Parser Lab')),
+      appBar: AppBar(title: Text(s.parserLab)),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            const Text(
-              'Paste a real money SMS / notification text below to see how '
-              'Mapato will parse it. Use this to tune lib/parser.dart for each '
-              'network. Anything that returns "no match" means the regex needs work.',
-              style: TextStyle(fontSize: 13),
+            Text(
+              s.parserLabInstruction,
+              style: const TextStyle(fontSize: 13),
             ),
             const SizedBox(height: 12),
             _SampleField(controller: _controller),
             const SizedBox(height: 24),
             if (state.capturedRaw.isNotEmpty) ...[
-              const Text('Recent captured (tap to load)',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(s.recentCaptured,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               ...state.capturedRaw.take(20).map(
                     (raw) => ListTile(
@@ -54,8 +54,7 @@ class _ParserLabScreenState extends State<ParserLabScreen> {
                     ),
                   ),
             ] else
-              const Text('No captures yet. Enable notification/SMS access and '
-                  'do a real transfer to populate this list.'),
+              Text(s.noCapturesYet),
           ],
         ),
       ),
@@ -93,22 +92,23 @@ class _SampleFieldState extends State<_SampleField> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
           controller: widget.controller,
           maxLines: 5,
-          decoration: const InputDecoration(
-            labelText: 'Sample message',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            labelText: s.sampleMessage,
+            border: const OutlineInputBorder(),
             alignLabelWithHint: true,
           ),
           onChanged: (_) => _update(),
         ),
         const SizedBox(height: 16),
         if (_result == null)
-          const Text('No match — parser returned null. Tune the regexes.')
+          Text(s.noMatch)
         else
           Card(
             child: Padding(
@@ -116,13 +116,13 @@ class _SampleFieldState extends State<_SampleField> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Row('Network', _result!.network),
-                  _Row('Direction', _result!.direction),
-                  _Row('Amount', _result!.amount.toString()),
-                  _Row('Balance',
-                      _result!.balance?.toString() ?? '—'),
-                  _Row('Counterparty',
-                      _result!.counterparty ?? '—'),
+                  _Row(s.networkLabel, _result!.network),
+                  _Row(s.directionLabel, _result!.direction),
+                  _Row(s.amountTsh, _result!.amount.toString()),
+                  _Row(s.balance,
+                      _result!.balance?.toString() ?? 'â€”'),
+                  _Row(s.counterparty,
+                      _result!.counterparty ?? 'â€”'),
                 ],
               ),
             ),

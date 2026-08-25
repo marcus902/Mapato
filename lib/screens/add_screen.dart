@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
 import 'package:mapato/utils.dart';
@@ -31,10 +32,11 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   void _save() async {
+    final s = AppLocalizations.of(context);
     final amt = double.tryParse(_amount.text.replaceAll(',', ''));
     if (amt == null || amt <= 0) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Enter a valid amount')));
+          .showSnackBar(SnackBar(content: Text(s.enterValidAmount)));
       return;
     }
     await context.read<AppState>().addManual(
@@ -48,7 +50,7 @@ class _AddScreenState extends State<AddScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Added ${directionLabel(_direction)} ${tzs(amt)}'),
+        content: Text(s.addedDirection(directionLabel(_direction), tzs(amt))),
       ),
     );
     Navigator.of(context).maybePop();
@@ -56,19 +58,20 @@ class _AddScreenState extends State<AddScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final state = context.watch<AppState>();
     final categories = state.categories;
     return Scaffold(
-      appBar: AppBar(title: const Text('Add transaction')),
+      appBar: AppBar(title: Text(s.addTransaction)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'out', label: Text('Spent')),
-              ButtonSegment(value: 'in', label: Text('Received')),
-              ButtonSegment(value: 'transfer', label: Text('Saved')),
+            segments: [
+              ButtonSegment(value: 'out', label: Text(s.spent)),
+              ButtonSegment(value: 'in', label: Text(s.received)),
+              ButtonSegment(value: 'transfer', label: Text(s.saved)),
             ],
             selected: {_direction},
             onSelectionChanged: (s) => setState(() => _direction = s.first),
@@ -77,13 +80,13 @@ class _AddScreenState extends State<AddScreen> {
           TextField(
             controller: _amount,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Amount (Tsh)',
-              prefixIcon: Icon(Icons.money_rounded),
+            decoration: InputDecoration(
+              labelText: s.amountTsh,
+              prefixIcon: const Icon(Icons.money_rounded),
             ),
           ),
           const SizedBox(height: 18),
-          const _FieldLabel('Network'),
+          _FieldLabel(s.networkLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -105,7 +108,7 @@ class _AddScreenState extends State<AddScreen> {
                 .toList(),
           ),
           const SizedBox(height: 18),
-          const _FieldLabel('Category'),
+          _FieldLabel(s.categoryLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -125,24 +128,24 @@ class _AddScreenState extends State<AddScreen> {
           const SizedBox(height: 18),
           TextField(
             controller: _counterparty,
-            decoration: const InputDecoration(
-              labelText: 'Counterparty (optional)',
-              prefixIcon: Icon(Icons.person_outline),
+            decoration: InputDecoration(
+              labelText: s.counterpartyOptional,
+              prefixIcon: const Icon(Icons.person_outline),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _note,
-            decoration: const InputDecoration(
-              labelText: 'Note (optional)',
-              prefixIcon: Icon(Icons.notes_outlined),
+            decoration: InputDecoration(
+              labelText: s.noteOptional,
+              prefixIcon: const Icon(Icons.notes_outlined),
             ),
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: _save,
             icon: const Icon(Icons.check_rounded),
-            label: const Text('Save transaction'),
+            label: Text(s.saveTransaction),
           ),
         ],
       ),
@@ -166,4 +169,3 @@ class _FieldLabel extends StatelessWidget {
     );
   }
 }
-

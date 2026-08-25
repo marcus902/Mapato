@@ -1,7 +1,20 @@
-import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.dart';import 'package:intl/intl.dart';import 'package:mapato/database.dart';import 'package:mapato/state/app_state.dart';import 'package:mapato/theme.dart';import 'package:mapato/utils.dart';import 'package:provider/provider.dart';class TransactionsScreen extends StatefulWidget {
+﻿import 'package:drift/drift.dart' hide Column;
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:mapato/database.dart';
+import 'package:mapato/l10n/app_localizations.dart';
+import 'package:mapato/state/app_state.dart';
+import 'package:mapato/theme.dart';
+import 'package:mapato/utils.dart';
+import 'package:provider/provider.dart';
+
+class TransactionsScreen extends StatefulWidget {
   const TransactionsScreen({super.key});
   @override
-  State<TransactionsScreen> createState() => _TransactionsScreenState();}class _TransactionsScreenState extends State<TransactionsScreen> {
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
   final _query = TextEditingController();
   String _network = 'all';
   bool _searching = false;
@@ -12,11 +25,13 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
   String _range = 'all';
   DateTime? _from;
   DateTime? _to;
+
   @override
   void dispose() {
     _query.dispose();
     super.dispose();
   }
+
   (bool, DateTime, DateTime) _rangeBounds() {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -41,6 +56,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         return (false, today, today);
     }
   }
+
   List<dynamic> _visible() {
     final all = context.read<AppState>().transactions;
     final (useRange, start, end) = _rangeBounds();
@@ -59,15 +75,18 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       return true;
     }).toList();
   }
+
   void _enterSelection(int id) {
     setState(() {
       _selectionMode = true;
       _selected.add(id);
     });
   }
+
   void _startSelection() {
     setState(() => _selectionMode = true);
   }
+
   Future<void> _pickRange() async {
     final from = await showDatePicker(
       context: context,
@@ -88,11 +107,13 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       _to = to ?? from;
     });
   }
+
   Future<void> _openDetail(dynamic t) async {
     await Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => TransactionDetailScreen(t: t)),
     );
   }
+
   void _toggle(int id) {
     setState(() {
       if (_selected.contains(id)) {
@@ -103,12 +124,14 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       if (_selected.isEmpty) _selectionMode = false;
     });
   }
+
   void _exitSelection() {
     setState(() {
       _selected.clear();
       _selectionMode = false;
     });
   }
+
   void _toggleSelectAll(List<dynamic> visible) {
     setState(() {
       final allSelected =
@@ -122,17 +145,19 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       }
     });
   }
+
   Future<void> _confirmDelete(List<int> ids) async {
+    final s = AppLocalizations.of(context);
     final count = ids.length;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Delete ${count > 1 ? '$count transactions' : 'transaction'}?'),
-        content: const Text('This action cannot be undone.'),
+        title: Text(s.deleteCountQuestion(count)),
+        content: Text(s.actionCannotUndone),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(s.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -140,7 +165,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete'),
+            child: Text(s.delete),
           ),
         ],
       ),
@@ -150,6 +175,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       _exitSelection();
     }
   }
+
   Future<void> _openEdit(dynamic t) async {
     final cs = Theme.of(context).colorScheme;
     await showModalBottomSheet(
@@ -162,15 +188,18 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       builder: (_) => _EditTxnSheet(t: t),
     );
   }
+
   String _dayKey(DateTime d) {
+    final s = AppLocalizations.of(context);
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final day = DateTime(d.year, d.month, d.day);
     final diff = today.difference(day).inDays;
-    if (diff == 0) return 'Today';
-    if (diff == 1) return 'Yesterday';
+    if (diff == 0) return s.today;
+    if (diff == 1) return s.yesterday;
     return DateFormat('d MMM yyyy').format(d);
   }
+
   List<_Group> _group(List<dynamic> txns) {
     final map = <String, List<dynamic>>{};
     for (final t in txns) {
@@ -178,8 +207,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     }
     return map.entries.map((e) => _Group(e.key, e.value)).toList();
   }
+
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final state = context.watch<AppState>();
     final visible = _visible();
@@ -188,7 +219,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       appBar: AppBar(
         leading: _selectionMode
             ? IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: _exitSelection,
               )
             : null,
@@ -197,7 +228,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                 controller: _query,
                 autofocus: true,
                 decoration: InputDecoration(
-                  hintText: 'Search transactions...',
+                  hintText: s.searchTransactions,
                   border: InputBorder.none,
                   hintStyle: TextStyle(color: cs.onSurfaceVariant),
                 ),
@@ -205,26 +236,26 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                 onChanged: (_) => setState(() {}),
               )
             : Text(_selectionMode
-                ? '${_selected.length} selected'
-                : 'Transactions'),
+                ? s.selectedCount(_selected.length)
+                : s.transactions),
         actions: [
           if (_selectionMode) ...[
             IconButton(
-              icon: Icon(Icons.select_all),
+              icon: const Icon(Icons.select_all),
               onPressed: () => _toggleSelectAll(visible),
-              tooltip: 'Select all',
+              tooltip: s.selectAll,
             ),
             IconButton(
-              icon: Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline),
               onPressed: _selected.isEmpty
                   ? null
                   : () => _confirmDelete(_selected.toList()),
-              tooltip: 'Delete selected',
+              tooltip: s.deleteSelected,
             ),
           ] else ...[
             IconButton(
-              icon: Icon(Icons.checklist),
-              tooltip: 'Select',
+              icon: const Icon(Icons.checklist),
+              tooltip: s.select,
               onPressed: _startSelection,
             ),
             IconButton(
@@ -265,17 +296,17 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                       children: [
                         OutlinedButton.icon(
                           onPressed: _pickRange,
-                          icon: Icon(Icons.date_range, size: 16),
+                          icon: const Icon(Icons.date_range, size: 16),
                           label: Text(_from == null
-                              ? 'From'
+                              ? s.from
                               : DateFormat('d MMM yyyy').format(_from!)),
                         ),
                         const SizedBox(width: 8),
                         OutlinedButton.icon(
                           onPressed: _pickRange,
-                          icon: Icon(Icons.date_range, size: 16),
+                          icon: const Icon(Icons.date_range, size: 16),
                           label: Text(_to == null
-                              ? 'To'
+                              ? s.to
                               : DateFormat('d MMM yyyy').format(_to!)),
                         ),
                       ],
@@ -284,7 +315,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                 if (visible.isEmpty)
                   Expanded(
                     child: Center(
-                      child: Text('No matches.',
+                      child: Text(s.noMatches,
                           style: TextStyle(color: cs.onSurfaceVariant)),
                     ),
                   )
@@ -342,7 +373,11 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                   ),
               ],
         ),
-      );}}class _FilterChips extends StatelessWidget {
+      );
+  }
+}
+
+class _FilterChips extends StatelessWidget {
   final List<String> networks;
   final String selected;
   final ValueChanged<String> onTap;
@@ -353,6 +388,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
   });
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     return SizedBox(
       height: 52,
@@ -364,7 +400,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         itemBuilder: (context, i) {
           final n = networks[i];
           final isAll = n == 'all';
-          final label = isAll ? 'All' : networkLabel(n);
+          final label = isAll ? s.all : networkLabel(n);
           final active = selected == n;
           return ChoiceChip(
             label: Text(label),
@@ -384,7 +420,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         },
       ),
     );
-  }}class _RangeChips extends StatelessWidget {
+  }
+}
+
+class _RangeChips extends StatelessWidget {
   final List<String> ranges;
   final String selected;
   final ValueChanged<String> onTap;
@@ -393,17 +432,18 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     required this.selected,
     required this.onTap,
   });
-  static const _labels = {
-    'all': 'All',
-    'today': 'Today',
-    'week': 'This week',
-    'month': 'This month',
-    'lastmonth': 'Last month',
-    'custom': 'Custom',
-  };
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
+    final labels = {
+      'all': s.all,
+      'today': s.today,
+      'week': s.thisWeek,
+      'month': s.thisMonth,
+      'lastmonth': s.lastMonth,
+      'custom': s.custom,
+    };
     return SizedBox(
       height: 44,
       child: ListView.separated(
@@ -415,14 +455,17 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
           final r = ranges[i];
           final active = selected == r;
           return ChoiceChip(
-            label: Text(_labels[r] ?? r),
+            label: Text(labels[r] ?? r),
             selected: active,
             onSelected: (_) => onTap(r),
           );
         },
       ),
     );
-  }}class _TxnRow extends StatelessWidget {
+  }
+}
+
+class _TxnRow extends StatelessWidget {
   final dynamic t;
   final bool selectionMode;
   final bool selected;
@@ -441,6 +484,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
   });
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final isIncome = t.direction == 'in';
     final dirColor = directionColor(t.direction);
@@ -499,7 +543,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                   children: [
                     Text(
                       t.counterparty ?? t.category,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
                           letterSpacing: -0.2),
@@ -536,7 +580,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
               if (!selectionMode && (onDelete != null || onEdit != null))
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
-                  tooltip: 'More',
+                  tooltip: s.more,
                   onSelected: (action) {
                     if (action == 'edit') {
                       onEdit?.call();
@@ -546,13 +590,13 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                   },
                   itemBuilder: (_) => [
                     if (onEdit != null)
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 'edit',
                         child: Row(
                           children: [
-                            Icon(Icons.edit_outlined, size: 18),
-                            SizedBox(width: 12),
-                            Text('Edit'),
+                            const Icon(Icons.edit_outlined, size: 18),
+                            const SizedBox(width: 12),
+                            Text(s.edit),
                           ],
                         ),
                       ),
@@ -561,11 +605,11 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete_outline,
+                            const Icon(Icons.delete_outline,
                                 size: 18, color: AppColors.expense),
                             const SizedBox(width: 12),
-                            Text('Delete',
-                                style: TextStyle(color: AppColors.expense)),
+                            Text(s.delete,
+                                style: const TextStyle(color: AppColors.expense)),
                           ],
                         ),
                       ),
@@ -585,7 +629,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         ),
       ),
     );
-  }}class _NetBadge extends StatelessWidget {
+  }
+}
+
+class _NetBadge extends StatelessWidget {
   final String network;
   const _NetBadge({required this.network});
   @override
@@ -603,30 +650,42 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
             fontWeight: FontWeight.w700,
           ),
         ),
-      );}class _NoTxns extends StatelessWidget {
+      );
+}
+
+class _NoTxns extends StatelessWidget {
   const _NoTxns();
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Text(
-          'No transactions found.\nTurn on capture in Settings, add one '
-          'manually, or change the date filter.',
+          s.noTransactionsFound,
           textAlign: TextAlign.center,
           style: TextStyle(color: cs.onSurfaceVariant),
         ),
       ),
     );
-  }}class _Group {
+  }
+}
+
+class _Group {
   final String label;
   final List<dynamic> items;
-  _Group(this.label, this.items);}class _EditTxnSheet extends StatefulWidget {
+  _Group(this.label, this.items);
+}
+
+class _EditTxnSheet extends StatefulWidget {
   final dynamic t;
   const _EditTxnSheet({required this.t});
   @override
-  State<_EditTxnSheet> createState() => _EditTxnSheetState();}class _EditTxnSheetState extends State<_EditTxnSheet> {
+  State<_EditTxnSheet> createState() => _EditTxnSheetState();
+}
+
+class _EditTxnSheetState extends State<_EditTxnSheet> {
   final _amount = TextEditingController();
   final _counterparty = TextEditingController();
   final _note = TextEditingController();
@@ -634,6 +693,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
   late String _network;
   late String _category;
   final _networks = ['mpesa', 'mixx', 'airtel', 'halo', 'azam', 'manual'];
+
   @override
   void initState() {
     super.initState();
@@ -645,6 +705,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     _network = _networks.contains(t.network) ? t.network : 'manual';
     _category = t.category;
   }
+
   @override
   void dispose() {
     _amount.dispose();
@@ -652,11 +713,13 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     _note.dispose();
     super.dispose();
   }
+
   Future<void> _save() async {
+    final s = AppLocalizations.of(context);
     final amt = double.tryParse(_amount.text.replaceAll(',', ''));
     if (amt == null || amt <= 0) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Enter a valid amount')));
+          .showSnackBar(SnackBar(content: Text(s.enterValidAmount)));
       return;
     }
     final t = widget.t;
@@ -678,8 +741,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     if (!mounted) return;
     Navigator.of(context).pop();
   }
+
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final state = context.watch<AppState>();
     final categories = state.categories;
@@ -696,20 +761,20 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Edit transaction',
-                  style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+              Text(s.editTransaction,
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
               IconButton(
-                icon: Icon(Icons.close),
+                icon: const Icon(Icons.close),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           ),
           const SizedBox(height: 8),
           SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'out', label: Text('Spent')),
-              ButtonSegment(value: 'in', label: Text('Received')),
-              ButtonSegment(value: 'transfer', label: Text('Saved')),
+            segments: [
+              ButtonSegment(value: 'out', label: Text(s.spent)),
+              ButtonSegment(value: 'in', label: Text(s.received)),
+              ButtonSegment(value: 'transfer', label: Text(s.saved)),
             ],
             selected: {_direction},
             onSelectionChanged: (s) => setState(() => _direction = s.first),
@@ -719,12 +784,12 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
             controller: _amount,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              labelText: 'Amount (Tsh)',
-              prefixIcon: Icon(Icons.money_rounded),
+              labelText: s.amountTsh,
+              prefixIcon: const Icon(Icons.money_rounded),
             ),
           ),
           const SizedBox(height: 16),
-          const _FieldLabel('Network'),
+          _FieldLabel(s.networkLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -746,7 +811,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
                 .toList(),
           ),
           const SizedBox(height: 16),
-          const _FieldLabel('Category'),
+          _FieldLabel(s.categoryLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -767,28 +832,31 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
           TextField(
             controller: _counterparty,
             decoration: InputDecoration(
-              labelText: 'Counterparty (optional)',
-              prefixIcon: Icon(Icons.person_outline),
+              labelText: s.counterpartyOptional,
+              prefixIcon: const Icon(Icons.person_outline),
             ),
           ),
           const SizedBox(height: 12),
           TextField(
             controller: _note,
             decoration: InputDecoration(
-              labelText: 'Note (optional)',
-              prefixIcon: Icon(Icons.notes_outlined),
+              labelText: s.noteOptional,
+              prefixIcon: const Icon(Icons.notes_outlined),
             ),
           ),
           const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: _save,
-            icon: Icon(Icons.check_rounded),
-            label: const Text('Save changes'),
+            icon: const Icon(Icons.check_rounded),
+            label: Text(s.saveChanges),
           ),
         ],
       ),
     );
-  }}class _FieldLabel extends StatelessWidget {
+  }
+}
+
+class _FieldLabel extends StatelessWidget {
   final String text;
   const _FieldLabel(this.text);
   @override
@@ -802,19 +870,24 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         fontSize: 14,
       ),
     );
-  }}class TransactionDetailScreen extends StatelessWidget {
+  }
+}
+
+class TransactionDetailScreen extends StatelessWidget {
   final dynamic t;
   const TransactionDetailScreen({super.key, required this.t});
+
   Future<void> _confirmDelete(BuildContext context) async {
+    final s = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete transaction?'),
-        content: const Text('This action cannot be undone.'),
+        title: Text(s.deleteCountQuestion(1)),
+        content: Text(s.actionCannotUndone),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(s.cancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -822,7 +895,7 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete'),
+            child: Text(s.delete),
           ),
         ],
       ),
@@ -832,8 +905,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
       Navigator.of(context).pop();
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final state = context.watch<AppState>();
     final isIncome = t.direction == 'in';
@@ -843,11 +918,11 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
     final dirLabel = directionLabel(t.direction);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transaction'),
+        title: Text(s.transaction),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit_outlined),
-            tooltip: 'Edit',
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: s.edit,
             onPressed: () => showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -859,8 +934,8 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
             ),
           ),
           IconButton(
-            icon: Icon(Icons.delete_outline),
-            tooltip: 'Delete',
+            icon: const Icon(Icons.delete_outline),
+            tooltip: s.delete,
             color: AppColors.expense,
             onPressed: () => _confirmDelete(context),
           ),
@@ -897,38 +972,38 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
           _DetailRow(
             icon: catIcon,
             iconColor: catColor,
-            label: 'Category',
+            label: s.categoryLabel,
             value: t.category,
           ),
           if (t.counterparty != null && t.counterparty.isNotEmpty)
             _DetailRow(
               icon: Icons.person_outline,
               label: t.direction == 'transfer'
-                  ? 'Account'
-                  : (isIncome ? 'From' : 'To'),
+                  ? s.account
+                  : (isIncome ? s.from : s.to),
               value: t.counterparty,
             ),
           _DetailRow(
             icon: Icons.event,
-            label: 'Date',
-            value: DateFormat('EEE, d MMM yyyy • HH:mm').format(t.timestamp),
+            label: s.date,
+            value: DateFormat('EEE, d MMM yyyy â€¢ HH:mm').format(t.timestamp),
           ),
           _DetailRow(
             icon: Icons.source_outlined,
-            label: 'Source',
-            value: t.source == 'notification' ? 'Notification' : 'Manual',
+            label: s.source,
+            value: t.source == 'notification' ? s.notifSource : s.manualSource,
           ),
           if (t.balance != null)
             _DetailRow(
               icon: Icons.account_balance_wallet_outlined,
-              label: 'Balance',
+              label: s.balance,
               value: tzs(t.balance!),
             ),
           if (t.note != null && t.note.isNotEmpty)
-            _DetailRow(icon: Icons.notes_outlined, label: 'Note', value: t.note),
+            _DetailRow(icon: Icons.notes_outlined, label: s.noteDetail, value: t.note),
           const SizedBox(height: 16),
           if (t.raw != null && t.raw!.isNotEmpty) ...[
-            const _FieldLabel('Original message'),
+            _FieldLabel(s.originalMessage),
             const SizedBox(height: 8),
             Container(
               width: double.infinity,
@@ -951,7 +1026,10 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
         ],
       ),
     );
-  }}class _DetailRow extends StatelessWidget {
+  }
+}
+
+class _DetailRow extends StatelessWidget {
   final IconData icon;
   final Color? iconColor;
   final String label;
@@ -995,5 +1073,5 @@ import 'package:drift/drift.dart' hide Column;import 'package:flutter/material.d
           ],
         ),
       );
-}
+  }
 }

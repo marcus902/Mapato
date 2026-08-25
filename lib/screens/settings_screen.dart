@@ -1,7 +1,8 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapato/export_import.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/screens/categories_screen.dart';
 import 'package:mapato/screens/parser_lab_screen.dart';
@@ -82,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     final all = await getPrefBool('capture_all');
     final csv = await getPrefString('capture_packages');
     final set = csv.isEmpty
-        ? _captureSources.map((s) => s.pkg).toSet()
+        ? _captureSources.map((source) => source.pkg).toSet()
         : csv.split(',').where((e) => e.isNotEmpty).toSet();
     if (csv.isEmpty) {
       await setPrefString('capture_packages', set.join(','));
@@ -139,14 +140,16 @@ class _SettingsScreenState extends State<SettingsScreen>
       await settingsChannel.invokeMethod('openNotificationSettings');
     } on PlatformException catch (e) {
       if (!mounted) return;
+      final s = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to open settings: $e')),
+        SnackBar(content: Text(s.failedToOpenSettings(e.toString()))),
       );
     }
   }
 
   Future<void> _toggleSms(bool value) async {
     if (!mounted) return;
+    final s = AppLocalizations.of(context);
     if (value) {
       bool granted = false;
       try {
@@ -155,7 +158,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       } on PlatformException catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('SMS permission failed: $e')));
+            .showSnackBar(SnackBar(content: Text(s.smsPermissionFailed(e.toString()))));
         return;
       }
       if (!mounted) return;
@@ -164,21 +167,12 @@ class _SettingsScreenState extends State<SettingsScreen>
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('SMS Permission Blocked'),
-            content: const Text(
-              'Google Play Protect is blocking SMS permission for Mapato.\n\n'
-              'To enable SMS capture:\n\n'
-              '1. Open Google Play Store\n'
-              '2. Tap your profile icon > Play Protect\n'
-              '3. Tap the settings gear icon\n'
-              '4. Turn OFF "Improve harmful app protection"\n\n'
-              'This is safe — Mapato only reads mobile-money SMS. '
-              'Alternatively, use Notification access only (recommended).',
-            ),
+            title: Text(s.smsPermissionBlocked),
+            content: Text(s.smsPermissionBlockedMessage),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: const Text('OK'),
+                child: Text(s.ok),
               ),
             ],
           ),
@@ -227,13 +221,14 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
 
     return ListView(
       padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 8, 16, 24),
       children: [
-        // ── Data Capture ──
-        _sectionHeader('Data Capture'),
+        // â”€â”€ Data Capture â”€â”€
+        _sectionHeader(s.dataCapture),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -246,9 +241,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                   size: 22,
                   color: _notifEnabled ? AppColors.income : null,
                 ),
-                title: const Text('Notification access', style: TextStyle(fontSize: 14)),
+                title: Text(s.notificationAccess, style: const TextStyle(fontSize: 14)),
                 subtitle: Text(
-                  _notifEnabled ? 'Active' : 'Required to auto-capture',
+                  _notifEnabled ? s.active : s.requiredToAutoCapture,
                   style: TextStyle(
                     color: _notifEnabled ? AppColors.income : cs.onSurfaceVariant,
                     fontSize: 12,
@@ -261,7 +256,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           visualDensity: VisualDensity.compact,
                         ),
                         onPressed: _openListenerSettings,
-                        child: const Text('Enable', style: TextStyle(fontSize: 12)),
+                        child: Text(s.enableBtn, style: const TextStyle(fontSize: 12)),
                       ),
                 onTap: _openListenerSettings,
               ),
@@ -270,10 +265,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 secondary: const Icon(Icons.sms, size: 22),
-                title: const Text('SMS capture', style: TextStyle(fontSize: 14)),
-                subtitle: const Text(
-                  'Fallback when no notification',
-                  style: TextStyle(fontSize: 12),
+                title: Text(s.smsCapture, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  s.fallbackNoNotification,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 value: _loading ? false : _smsEnabled,
                 onChanged: _loading ? null : _toggleSms,
@@ -283,11 +278,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 leading: const Icon(Icons.apps, size: 22),
-                title: const Text('Capture sources', style: TextStyle(fontSize: 14)),
+                title: Text(s.captureSources, style: const TextStyle(fontSize: 14)),
                 subtitle: Text(
                   _captureAll
-                      ? 'All apps'
-                      : '${_captureSet.length}/${_captureSources.length} selected',
+                      ? s.allApps
+                      : s.captureSourcesSelected(_captureSet.length, _captureSources.length),
                   style: const TextStyle(fontSize: 12),
                 ),
                 childrenPadding: const EdgeInsets.only(left: 16),
@@ -295,19 +290,19 @@ class _SettingsScreenState extends State<SettingsScreen>
                   SwitchListTile(
                     dense: true,
                     visualDensity: VisualDensity.compact,
-                    title: const Text('Capture from all apps', style: TextStyle(fontSize: 13)),
+                    title: Text(s.captureFromAllApps, style: const TextStyle(fontSize: 13)),
                     value: _captureLoading ? false : _captureAll,
                     onChanged: _captureLoading ? null : _setCaptureAll,
                   ),
                   if (!_captureAll)
-                    ..._captureSources.map((s) => SwitchListTile(
+                    ..._captureSources.map((source) => SwitchListTile(
                           dense: true,
                           visualDensity: VisualDensity.compact,
-                          title: Text(s.label, style: const TextStyle(fontSize: 13)),
-                          value: _captureSet.contains(s.pkg),
+                          title: Text(source.label, style: const TextStyle(fontSize: 13)),
+                          value: _captureSet.contains(source.pkg),
                           onChanged: _captureLoading
                               ? null
-                              : (v) => _toggleSource(s.pkg, v),
+                              : (v) => _toggleSource(source.pkg, v),
                         )),
                 ],
               ),
@@ -315,8 +310,8 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
 
-        // ── Security ──
-        _sectionHeader('Security'),
+        // â”€â”€ Security â”€â”€
+        _sectionHeader(s.security),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -325,10 +320,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 secondary: const Icon(Icons.lock_outline, size: 22),
-                title: const Text('App lock (PIN)', style: TextStyle(fontSize: 14)),
-                subtitle: const Text(
-                  'Require PIN to open',
-                  style: TextStyle(fontSize: 12),
+                title: Text(s.appLockPin, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  s.requirePinToOpen,
+                  style: const TextStyle(fontSize: 12),
                 ),
                 value: state.pinEnabled,
                 onChanged: (v) async {
@@ -354,7 +349,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   dense: true,
                   visualDensity: VisualDensity.compact,
                   leading: const Icon(Icons.pin_outlined, size: 22),
-                  title: const Text('Change PIN', style: TextStyle(fontSize: 14)),
+                  title: Text(s.changePin, style: const TextStyle(fontSize: 14)),
                   trailing: const Icon(Icons.chevron_right, size: 20),
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
@@ -367,65 +362,109 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
 
-        // ── Appearance ──
-        _sectionHeader('Appearance'),
+        // â”€â”€ Appearance â”€â”€
+        _sectionHeader(s.appearance),
         Card(
-          child: ListTile(
-            dense: true,
-            visualDensity: VisualDensity.compact,
-            leading: const Icon(Icons.dark_mode_outlined, size: 22),
-            title: const Text('Theme', style: TextStyle(fontSize: 14)),
-            subtitle: Text(
-              state.themeMode == ThemeMode.dark
-                  ? 'Dark'
-                  : state.themeMode == ThemeMode.light
-                      ? 'Light'
-                      : 'System',
-              style: const TextStyle(fontSize: 12),
-            ),
-            trailing: const Icon(Icons.chevron_right, size: 20),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (ctx) => SimpleDialog(
-                  title: const Text('Theme'),
-                  children: [
-                    RadioListTile<ThemeMode>(
-                      title: const Text('Light'),
-                      value: ThemeMode.light,
-                      groupValue: state.themeMode,
-                      onChanged: (v) {
-                        state.setThemeMode(v!);
-                        Navigator.pop(ctx);
-                      },
-                    ),
-                    RadioListTile<ThemeMode>(
-                      title: const Text('Dark'),
-                      value: ThemeMode.dark,
-                      groupValue: state.themeMode,
-                      onChanged: (v) {
-                        state.setThemeMode(v!);
-                        Navigator.pop(ctx);
-                      },
-                    ),
-                    RadioListTile<ThemeMode>(
-                      title: const Text('System default'),
-                      value: ThemeMode.system,
-                      groupValue: state.themeMode,
-                      onChanged: (v) {
-                        state.setThemeMode(v!);
-                        Navigator.pop(ctx);
-                      },
-                    ),
-                  ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                leading: const Icon(Icons.dark_mode_outlined, size: 22),
+                title: Text(s.themeTitle, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  state.themeMode == ThemeMode.dark
+                      ? s.dark
+                      : state.themeMode == ThemeMode.light
+                          ? s.light
+                          : s.systemDefault,
+                  style: const TextStyle(fontSize: 12),
                 ),
-              );
-            },
+                trailing: const Icon(Icons.chevron_right, size: 20),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => SimpleDialog(
+                      title: Text(s.themeTitle),
+                      children: [
+                        RadioListTile<ThemeMode>(
+                          title: Text(s.light),
+                          value: ThemeMode.light,
+                          groupValue: state.themeMode,
+                          onChanged: (v) {
+                            state.setThemeMode(v!);
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                        RadioListTile<ThemeMode>(
+                          title: Text(s.dark),
+                          value: ThemeMode.dark,
+                          groupValue: state.themeMode,
+                          onChanged: (v) {
+                            state.setThemeMode(v!);
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                        RadioListTile<ThemeMode>(
+                          title: Text(s.systemDefault),
+                          value: ThemeMode.system,
+                          groupValue: state.themeMode,
+                          onChanged: (v) {
+                            state.setThemeMode(v!);
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                dense: true,
+                visualDensity: VisualDensity.compact,
+                leading: const Icon(Icons.language, size: 22),
+                title: Text(s.language, style: const TextStyle(fontSize: 14)),
+                subtitle: Text(
+                  state.locale.languageCode == 'sw' ? 'Kiswahili' : 'English',
+                  style: const TextStyle(fontSize: 12),
+                ),
+                trailing: const Icon(Icons.chevron_right, size: 20),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => SimpleDialog(
+                      title: Text(s.language),
+                      children: [
+                        RadioListTile<String>(
+                          title: const Text('English'),
+                          value: 'en',
+                          groupValue: state.locale.languageCode,
+                          onChanged: (v) {
+                            state.setLocale(const Locale('en'));
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                        RadioListTile<String>(
+                          title: const Text('Kiswahili'),
+                          value: 'sw',
+                          groupValue: state.locale.languageCode,
+                          onChanged: (v) {
+                            state.setLocale(const Locale('sw'));
+                            Navigator.pop(ctx);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
         ),
 
-        // ── Data ──
-        _sectionHeader('Data'),
+        // â”€â”€ Data â”€â”€
+        _sectionHeader(s.dataSection),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -434,7 +473,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 leading: const Icon(Icons.storage, size: 22),
-                title: const Text('Transactions captured', style: TextStyle(fontSize: 14)),
+                title: Text(s.transactionsCaptured, style: const TextStyle(fontSize: 14)),
                 trailing: Text(
                   '${state.transactions.length}',
                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
@@ -445,7 +484,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 leading: const Icon(Icons.category_outlined, size: 22),
-                title: const Text('Categories', style: TextStyle(fontSize: 14)),
+                title: Text(s.categoriesTitle, style: const TextStyle(fontSize: 14)),
                 trailing: const Icon(Icons.chevron_right, size: 20),
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const CategoriesScreen()),
@@ -456,7 +495,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 dense: true,
                 visualDensity: VisualDensity.compact,
                 leading: const Icon(Icons.science, size: 22),
-                title: const Text('Parser Lab', style: TextStyle(fontSize: 14)),
+                title: Text(s.parserLab, style: const TextStyle(fontSize: 14)),
                 trailing: const Icon(Icons.chevron_right, size: 20),
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const ParserLabScreen()),
@@ -466,8 +505,8 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
 
-        // ── Backup & Restore ──
-        _sectionHeader('Backup & Restore'),
+        // â”€â”€ Backup & Restore â”€â”€
+        _sectionHeader(s.backupRestore),
         Card(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -488,7 +527,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             }
                           },
                     icon: const Icon(Icons.upload, size: 16),
-                    label: const Text('Export', style: TextStyle(fontSize: 12)),
+                    label: Text(s.exportBtn, style: const TextStyle(fontSize: 12)),
                     style: FilledButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),
@@ -505,13 +544,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(count > 0
-                              ? 'Imported $count transaction${count == 1 ? '' : 's'}.'
-                              : 'No valid transactions found.'),
+                              ? s.importedCount(count)
+                              : s.noValidTransactions),
                         ),
                       );
                     },
                     icon: const Icon(Icons.download, size: 16),
-                    label: const Text('Import', style: TextStyle(fontSize: 12)),
+                    label: Text(s.importBtn, style: const TextStyle(fontSize: 12)),
                     style: OutlinedButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),
@@ -522,8 +561,8 @@ class _SettingsScreenState extends State<SettingsScreen>
           ),
         ),
 
-        // ── About ──
-        _sectionHeader('About'),
+        // â”€â”€ About â”€â”€
+        _sectionHeader(s.about),
         Card(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -555,7 +594,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
                           ),
                           Text(
-                            'Personal money tracker • v1.0.0',
+                            s.personalMoneyTracker,
                             style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
                           ),
                         ],
@@ -566,13 +605,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                 const SizedBox(height: 10),
                 const Divider(height: 1),
                 const SizedBox(height: 8),
-                _aboutRow(Icons.person_outline, 'Developer', 'Malik'),
+                _aboutRow(Icons.person_outline, s.developer, 'Malik'),
                 const SizedBox(height: 8),
-                _aboutRow(Icons.phone_outlined, 'Phone', '+255 628 946 399'),
+                _aboutRow(Icons.phone_outlined, s.phone, '+255 628 946 399'),
                 const SizedBox(height: 10),
                 Text(
-                  'Supports M-Pesa, Mixx by Yas, Airtel Money, HaloPesa & AzamPesa. '
-                  'Your data stays on your device.',
+                  s.aboutDescription,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 11, color: cs.onSurfaceVariant, height: 1.3),
                 ),

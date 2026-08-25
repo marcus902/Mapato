@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart' hide Category;
+﻿import 'package:flutter/material.dart' hide Category;
 import 'package:mapato/database.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
 import 'package:provider/provider.dart';
@@ -52,17 +53,17 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final state = context.watch<AppState>();
     return Scaffold(
-      appBar: AppBar(title: const Text('Categories')),
+      appBar: AppBar(title: Text(s.categoriesTitle)),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          const Text(
-            'Tap a category to edit its name, color and icon. '
-            'Custom categories appear when adding or editing transactions.',
-            style: TextStyle(fontSize: 13),
+          Text(
+            s.categoriesInstruction,
+            style: const TextStyle(fontSize: 13),
           ),
           const SizedBox(height: 16),
           ...state.categories.map((c) {
@@ -89,7 +90,7 @@ class CategoriesScreen extends StatelessWidget {
           FilledButton.icon(
             onPressed: () => _openEditor(context, state, null),
             icon: const Icon(Icons.add),
-            label: const Text('New category'),
+            label: Text(s.newCategory),
           ),
         ],
       ),
@@ -163,10 +164,11 @@ class _CategoryEditorState extends State<_CategoryEditor> {
   }
 
   Future<void> _save() async {
+    final s = AppLocalizations.of(context);
     final name = _name.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter a category name')),
+        SnackBar(content: Text(s.enterCategoryName)),
       );
       return;
     }
@@ -177,6 +179,7 @@ class _CategoryEditorState extends State<_CategoryEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: EdgeInsets.fromLTRB(
@@ -191,7 +194,7 @@ class _CategoryEditorState extends State<_CategoryEditor> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.existing == null ? 'New category' : 'Edit category',
+              Text(widget.existing == null ? s.newCategory : s.editCategory,
                   style: const TextStyle(
                       fontWeight: FontWeight.w800, fontSize: 18)),
               if (widget.existing != null)
@@ -204,13 +207,13 @@ class _CategoryEditorState extends State<_CategoryEditor> {
           const SizedBox(height: 12),
           TextField(
             controller: _name,
-            decoration: const InputDecoration(
-              labelText: 'Name',
-              prefixIcon: Icon(Icons.label_outline),
+            decoration: InputDecoration(
+              labelText: s.name,
+              prefixIcon: const Icon(Icons.label_outline),
             ),
           ),
           const SizedBox(height: 20),
-          const _FieldLabel('Color'),
+          _FieldLabel(s.color),
           const SizedBox(height: 8),
           Wrap(
             spacing: 10,
@@ -236,7 +239,7 @@ class _CategoryEditorState extends State<_CategoryEditor> {
                 .toList(),
           ),
           const SizedBox(height: 20),
-          const _FieldLabel('Icon'),
+          _FieldLabel(s.icon),
           const SizedBox(height: 8),
           Wrap(
             spacing: 10,
@@ -271,7 +274,7 @@ class _CategoryEditorState extends State<_CategoryEditor> {
           FilledButton.icon(
             onPressed: _save,
             icon: const Icon(Icons.check_rounded),
-            label: const Text('Save'),
+            label: Text(s.save),
           ),
           if (widget.onDelete != null) ...[
             const SizedBox(height: 10),
@@ -282,7 +285,7 @@ class _CategoryEditorState extends State<_CategoryEditor> {
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.delete_outline),
-              label: const Text('Delete category'),
+              label: Text(s.deleteCategory),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.expense,
               ),
@@ -310,4 +313,3 @@ class _FieldLabel extends StatelessWidget {
     );
   }
 }
-

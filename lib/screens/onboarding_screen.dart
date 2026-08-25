@@ -1,8 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/screens/root.dart';
+import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
+import 'package:provider/provider.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,30 +18,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _controller = PageController();
   int _page = 0;
 
-  final _pages = const [
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  List<_Page> _pages(BuildContext context) => [
+    _Page(
+      icon: Icons.language_rounded,
+      title: AppLocalizations.of(context).onboardingLanguageTitle,
+      body: AppLocalizations.of(context).onboardingLanguageSubtitle,
+      isLanguagePicker: true,
+    ),
     _Page(
       icon: Icons.account_balance_wallet_rounded,
-      title: 'Welcome to Mapato',
-      body: 'The personal finance tracker built for every Tanzanian '
-          'mobile-money wallet.',
+      title: AppLocalizations.of(context).onboardingWelcomeTitle,
+      body: AppLocalizations.of(context).onboardingWelcomeBody,
     ),
     _Page(
       icon: Icons.smartphone_rounded,
-      title: 'Captures every wallet',
-      body: 'Automatically reads your M-Pesa, Mixx by Yas, Airtel Money, '
-          'HaloPesa & AzamPesa transactions — via notifications and SMS.',
+      title: AppLocalizations.of(context).onboardingCapturesTitle,
+      body: AppLocalizations.of(context).onboardingCapturesBody,
     ),
     _Page(
       icon: Icons.lock_outline_rounded,
-      title: 'Private by design',
-      body: 'Everything is processed and stored on your device. '
-          'Your financial data never leaves your phone.',
+      title: AppLocalizations.of(context).onboardingPrivateTitle,
+      body: AppLocalizations.of(context).onboardingPrivateBody,
     ),
     _Page(
       icon: Icons.insights_rounded,
-      title: 'Beautiful insights',
-      body: 'See income, expenses, and exactly where your money goes — '
-          'by category and by network.',
+      title: AppLocalizations.of(context).onboardingInsightsTitle,
+      body: AppLocalizations.of(context).onboardingInsightsBody,
     ),
   ];
 
@@ -59,7 +70,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLast = _page == _pages.length - 1;
+    final pages = _pages(context);
+    final isLast = _page == pages.length - 1;
+    final s = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: SafeArea(
@@ -75,11 +89,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
                           fontSize: 18)),
-                  if (!isLast)
+                  if (!isLast && _page > 0)
                     TextButton(
                       onPressed: _finish,
-                      child: const Text('Skip',
-                          style: TextStyle(color: Colors.white)),
+                      child: Text(s.skip,
+                          style: const TextStyle(color: Colors.white)),
                     ),
                 ],
               ),
@@ -87,10 +101,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: _pages.length,
+                itemCount: pages.length,
                 onPageChanged: (i) => setState(() => _page = i),
                 itemBuilder: (context, i) {
-                  final p = _pages[i];
+                  final p = pages[i];
+                  if (p.isLanguagePicker) {
+                    return _LanguagePickerPage(
+                      onSelectLanguage: (locale) {
+                        context.read<AppState>().setLocale(locale);
+                        _controller.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                    );
+                  }
                   return Padding(
                     padding: const EdgeInsets.all(32),
                     child: Column(
@@ -136,7 +161,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                _pages.length,
+                pages.length,
                 (i) => Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   width: _page == i ? 22 : 8,
@@ -153,52 +178,140 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 24),
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
-              child: isLast
-                  ? Column(
-                      children: [
-                        FilledButton.icon(
-                          style: FilledButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppColors.primary,
-                          ),
-                          onPressed: _openNotifications,
-                          icon: const Icon(Icons.notifications_active_outlined),
-                          label: const Text('Enable notification access'),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+              child: _page == 0
+                  ? null
+                  : isLast
+                      ? Column(
+                          children: [
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.primary,
                               ),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 16),
+                              onPressed: _openNotifications,
+                              icon: const Icon(Icons.notifications_active_outlined),
+                              label: Text(s.enableNotificationAccess),
                             ),
-                            onPressed: _finish,
-                            child: const Text('Get started'),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                ),
+                                onPressed: _finish,
+                                child: Text(s.getStarted),
+                              ),
+                            ),
+                          ],
+                        )
+                      : SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: AppColors.primary,
+                            ),
+                            onPressed: () => _controller.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.ease,
+                            ),
+                            child: Text(s.next),
                           ),
                         ),
-                      ],
-                    )
-                  : SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: AppColors.primary,
-                        ),
-                        onPressed: () => _controller.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.ease,
-                        ),
-                        child: const Text('Next'),
-                      ),
-                    ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguagePickerPage extends StatelessWidget {
+  final ValueChanged<Locale> onSelectLanguage;
+  const _LanguagePickerPage({required this.onSelectLanguage});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 110,
+            height: 110,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: const Icon(Icons.language_rounded,
+                color: Colors.white, size: 60),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            s.onboardingLanguageTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 32),
+          _LangButton(
+            label: 'English',
+            flag: 'ðŸ‡¬ðŸ‡§',
+            onTap: () => onSelectLanguage(const Locale('en')),
+          ),
+          const SizedBox(height: 14),
+          _LangButton(
+            label: 'Kiswahili',
+            flag: 'ðŸ‡¹ðŸ‡¿',
+            onTap: () => onSelectLanguage(const Locale('sw')),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LangButton extends StatelessWidget {
+  final String label;
+  final String flag;
+  final VoidCallback onTap;
+  const _LangButton({required this.label, required this.flag, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.primary,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        onPressed: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(flag, style: const TextStyle(fontSize: 22)),
+            const SizedBox(width: 12),
+            Text(label,
+                style: const TextStyle(
+                    fontSize: 17, fontWeight: FontWeight.w700)),
           ],
         ),
       ),
@@ -210,5 +323,11 @@ class _Page {
   final IconData icon;
   final String title;
   final String body;
-  const _Page({required this.icon, required this.title, required this.body});
+  final bool isLanguagePicker;
+  const _Page({
+    required this.icon,
+    required this.title,
+    required this.body,
+    this.isLanguagePicker = false,
+  });
 }

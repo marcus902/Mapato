@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/screens/add_screen.dart';
 import 'package:mapato/screens/home_screen.dart';
@@ -51,6 +52,7 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    final s = AppLocalizations.of(context);
     if (!state.pinReady) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -67,11 +69,11 @@ class _RootState extends State<Root> with WidgetsBindingObserver {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Txns'),
-          NavigationDestination(icon: Icon(Icons.add), label: 'Add'),
-          NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
+        destinations: [
+          NavigationDestination(icon: const Icon(Icons.dashboard), label: s.navHome),
+          NavigationDestination(icon: const Icon(Icons.receipt_long), label: s.navTxns),
+          NavigationDestination(icon: const Icon(Icons.add), label: s.navAdd),
+          NavigationDestination(icon: const Icon(Icons.settings), label: s.navSettings),
         ],
       ),
     );

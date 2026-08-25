@@ -1,10 +1,15 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/security.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
 import 'package:provider/provider.dart';
 
 enum PinMode { setup, unlock, change }
+
+enum _PinStatus { enterPin, createPin, enterCurrent, enterNew, confirmNew, confirmPin }
+
+enum _PinError { incorrectCurrent, mismatch, incorrect }
 
 class PinScreen extends StatefulWidget {
   final PinMode mode;
@@ -17,7 +22,8 @@ class PinScreen extends StatefulWidget {
 
 class _PinScreenState extends State<PinScreen> {
   final List<String> _digits = [];
-  String _status = '';
+  _PinStatus _statusKey = _PinStatus.enterPin;
+  _PinError? _errorKey;
   bool _error = false;
 
   String? _firstEntry;
@@ -30,13 +36,13 @@ class _PinScreenState extends State<PinScreen> {
     super.initState();
     switch (widget.mode) {
       case PinMode.unlock:
-        _status = 'Enter your PIN';
+        _statusKey = _PinStatus.enterPin;
         break;
       case PinMode.setup:
-        _status = 'Create a 4-digit PIN';
+        _statusKey = _PinStatus.createPin;
         break;
       case PinMode.change:
-        _status = 'Enter current PIN';
+        _statusKey = _PinStatus.enterCurrent;
         break;
     }
   }
@@ -66,7 +72,7 @@ class _PinScreenState extends State<PinScreen> {
         final ok = await context.read<AppState>().verifyPin(entered);
         if (!mounted) return;
         if (!ok) {
-          _fail('Incorrect current PIN');
+          _fail(_PinError.incorrectCurrent);
           return;
         }
         setState(() {
@@ -74,7 +80,7 @@ class _PinScreenState extends State<PinScreen> {
           _confirming = false;
           _firstEntry = null;
           _digits.clear();
-          _status = 'Enter new PIN';
+          _statusKey = _PinStatus.enterNew;
         });
         return;
       }
@@ -83,12 +89,12 @@ class _PinScreenState extends State<PinScreen> {
         setState(() {
           _confirming = true;
           _digits.clear();
-          _status = 'Confirm new PIN';
+          _statusKey = _PinStatus.confirmNew;
         });
         return;
       }
       if (entered != _firstEntry) {
-        _fail('PINs do not match. Try again.');
+        _fail(_PinError.mismatch);
         return;
       }
       await context.read<AppState>().setPin(entered);
@@ -103,12 +109,12 @@ class _PinScreenState extends State<PinScreen> {
         setState(() {
           _confirming = true;
           _digits.clear();
-          _status = 'Confirm your PIN';
+          _statusKey = _PinStatus.confirmPin;
         });
         return;
       }
       if (entered != _firstEntry) {
-        _fail('PINs do not match. Try again.');
+        _fail(_PinError.mismatch);
         return;
       }
       await context.read<AppState>().setPin(entered);
@@ -122,15 +128,15 @@ class _PinScreenState extends State<PinScreen> {
     if (ok) {
       widget.onSuccess?.call();
     } else {
-      _fail('Incorrect PIN');
+      _fail(_PinError.incorrect);
     }
   }
 
-  void _fail(String msg) {
+  void _fail(_PinError error) {
     setState(() {
       _error = true;
       _digits.clear();
-      _status = msg;
+      _errorKey = error;
       _confirming = false;
       _firstEntry = null;
     });
@@ -139,18 +145,36 @@ class _PinScreenState extends State<PinScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final s = AppLocalizations.of(context);
+
     final title = switch (widget.mode) {
-      PinMode.change => 'Change PIN',
+      PinMode.change => s.changePin,
       _ => 'Mapato',
     };
     final subtitle = switch (widget.mode) {
-      PinMode.change => _oldVerified ? 'Set a new PIN' : 'Verify your current PIN',
-      PinMode.unlock => 'Secure your money tracker',
-      PinMode.setup => 'Secure your money tracker',
+      PinMode.change => _oldVerified ? s.setNewPin : s.verifyCurrentPin,
+      PinMode.unlock => s.secureTracker,
+      PinMode.setup => s.secureTracker,
     };
+
+    final statusText = _error
+        ? switch (_errorKey!) {
+            _PinError.incorrectCurrent => s.pinIncorrectCurrent,
+            _PinError.mismatch => s.pinMismatch,
+            _PinError.incorrect => s.pinIncorrect,
+          }
+        : switch (_statusKey) {
+            _PinStatus.enterPin => s.pinEnterYourPin,
+            _PinStatus.createPin => s.pinCreate4Digit,
+            _PinStatus.enterCurrent => s.pinEnterCurrent,
+            _PinStatus.enterNew => s.pinEnterNew,
+            _PinStatus.confirmNew => s.pinConfirmNew,
+            _PinStatus.confirmPin => s.pinConfirmYour,
+          };
+
     return Scaffold(
       appBar: widget.mode == PinMode.change
-          ? AppBar(title: const Text('Change PIN'))
+          ? AppBar(title: Text(s.changePin))
           : null,
       body: SafeArea(
         child: Column(
@@ -182,7 +206,7 @@ class _PinScreenState extends State<PinScreen> {
             ),
             const SizedBox(height: 14),
             Text(
-              _status,
+              statusText,
               style: TextStyle(
                 color: _error ? AppColors.expense : cs.onSurfaceVariant,
               ),

@@ -1,8 +1,9 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mapato/groq_config.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
@@ -114,7 +115,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final firstUser = _messages.where((m) => m.role == 'user').firstOrNull;
     final t = firstUser?.text ?? '';
     if (t.isEmpty) return 'New chat';
-    return t.length > 30 ? '${t.substring(0, 30)}…' : t;
+    return t.length > 30 ? '${t.substring(0, 30)}â€¦' : t;
   }
 
   Future<void> _persist() async {
@@ -165,11 +166,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _send() async {
+    final s = AppLocalizations.of(context);
     final text = _controller.text.trim();
     if (text.isEmpty || _busy) return;
     final key = await _apiKey();
     if (key.isEmpty) {
-      setState(() => _error = 'Mapato AI is unavailable right now.');
+      setState(() => _error = s.aiUnavailable);
       return;
     }
     setState(() {
@@ -187,7 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
       await _persist();
     } catch (e) {
       setState(() =>
-          _error = 'Could not reach Mapato AI. Check your connection and try again.');
+          _error = s.couldNotReachAi);
     } finally {
       setState(() => _busy = false);
       _scrollToEnd();
@@ -259,6 +261,7 @@ ${_buildContext()}
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     return Scaffold(
       key: _scaffoldKey,
@@ -269,7 +272,7 @@ ${_buildContext()}
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text('Chat history',
+                child: Text(s.chatHistory,
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
@@ -277,7 +280,7 @@ ${_buildContext()}
               ),
               ListTile(
                 leading: const Icon(Icons.add_comment_outlined),
-                title: const Text('New chat'),
+                title: Text(s.newChat),
                 onTap: () {
                   Navigator.pop(context);
                   _newChat();
@@ -315,14 +318,14 @@ ${_buildContext()}
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          tooltip: 'History',
+          tooltip: s.history,
           onPressed: () => _scaffoldKey.currentState?.openDrawer(),
         ),
-        title: const Text('Mapato AI'),
+        title: Text(s.mapatoAi),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_comment_outlined),
-            tooltip: 'New chat',
+            tooltip: s.newChat,
             onPressed: _newChat,
           ),
         ],
@@ -335,8 +338,7 @@ ${_buildContext()}
                     child: Padding(
                       padding: const EdgeInsets.all(28),
                       child: Text(
-                        'Ask about your spending, saving, or how mobile money '
-                        'works in Tanzania.',
+                        s.askAboutMoney,
                         textAlign: TextAlign.center,
                         style: TextStyle(color: cs.onSurfaceVariant),
                       ),
@@ -398,7 +400,7 @@ ${_buildContext()}
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _send(),
                       decoration: InputDecoration(
-                        hintText: 'Ask about your money…',
+                        hintText: s.askHint,
                         prefixIcon: const Icon(Icons.chat_bubble_outline),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),

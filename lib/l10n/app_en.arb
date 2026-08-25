@@ -1,0 +1,249 @@
+﻿{
+  "@@locale": "en",
+
+  "appTitle": "Mapato",
+
+  "navHome": "Home",
+  "navTxns": "Txns",
+  "navAdd": "Add",
+  "navSettings": "Settings",
+
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "moneyOverview": "Here is your money overview",
+
+  "allTime": "All time",
+  "today": "Today",
+  "last7Days": "Last 7 days",
+  "thisMonth": "This month",
+  "lastMonth": "Last month",
+  "custom": "Custom",
+  "all": "All",
+  "week": "Week",
+  "month": "Month",
+  "lastMo": "Last mo",
+  "thisWeek": "This week",
+
+  "income": "Income",
+  "expenses": "Expenses",
+  "saved": "Saved",
+  "whereMoneyWent": "Where your money went",
+  "recentActivity": "Recent activity",
+  "totalSpent": "Total spent",
+
+  "netFlow": "{month} net flow",
+  "@netFlow": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "savingThisMonth": "You are saving this month",
+  "spendingExceeded": "Spending exceeded income",
+
+  "askMapatoAi": "Ask Mapato AI",
+  "switchToLight": "Switch to light",
+  "switchToDark": "Switch to dark",
+
+  "noTransactionsYet": "No transactions yet",
+  "notifOnMessage": "Notification access is on -- your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically as they arrive.",
+  "notifOffMessage": "Enable notification access in Settings and your M-Pesa, Mixx, Airtel, HaloPesa and AzamPesa transactions will appear here automatically.",
+  "openSettings": "Open Settings",
+
+  "tagline": "Your money, every network, one view.",
+
+  "language": "Language",
+  "transactions": "Transactions",
+
+  "onboardingWelcomeTitle": "Welcome to Mapato",
+  "onboardingWelcomeBody": "The personal finance tracker built for every Tanzanian mobile-money wallet.",
+  "onboardingCapturesTitle": "Captures every wallet",
+  "onboardingCapturesBody": "Automatically reads your M-Pesa, Mixx by Yas, Airtel Money, HaloPesa and AzamPesa transactions -- via notifications and SMS.",
+  "onboardingPrivateTitle": "Private by design",
+  "onboardingPrivateBody": "Everything is processed and stored on your device. Your financial data never leaves your phone.",
+  "onboardingInsightsTitle": "Beautiful insights",
+  "onboardingInsightsBody": "See income, expenses, and exactly where your money goes -- by category and by network.",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get started",
+  "enableNotificationAccess": "Enable notification access",
+
+  "onboardingLanguageTitle": "Choose your language",
+  "onboardingLanguageSubtitle": "Chagua lugha yako",
+  "english": "English",
+  "swahili": "Kiswahili",
+
+  "pinEnterYourPin": "Enter your PIN",
+  "pinCreate4Digit": "Create a 4-digit PIN",
+  "pinEnterCurrent": "Enter current PIN",
+  "pinIncorrectCurrent": "Incorrect current PIN",
+  "pinEnterNew": "Enter new PIN",
+  "pinConfirmNew": "Confirm new PIN",
+  "pinMismatch": "PINs do not match. Try again.",
+  "pinConfirmYour": "Confirm your PIN",
+  "pinIncorrect": "Incorrect PIN",
+  "changePin": "Change PIN",
+  "secureTracker": "Secure your money tracker",
+  "setNewPin": "Set a new PIN",
+  "verifyCurrentPin": "Verify your current PIN",
+
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "save": "Save",
+  "ok": "OK",
+  "edit": "Edit",
+
+  "deleteCountQuestion": "Delete {count, plural, =1{# transaction} other{# transactions}}?",
+  "@deleteCountQuestion": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "actionCannotUndone": "This action cannot be undone.",
+
+  "searchTransactions": "Search transactions...",
+  "selectedCount": "{count} selected",
+  "@selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "selectAll": "Select all",
+  "deleteSelected": "Delete selected",
+  "select": "Select",
+
+  "yesterday": "Yesterday",
+  "noMatches": "No matches.",
+
+  "more": "More",
+
+  "noTransactionsFound": "No transactions found. Turn on capture in Settings, add one manually, or change the date filter.",
+  "enterValidAmount": "Enter a valid amount",
+
+  "editTransaction": "Edit transaction",
+  "spent": "Spent",
+  "received": "Received",
+  "amountTsh": "Amount (Tsh)",
+  "networkLabel": "Network",
+  "categoryLabel": "Category",
+  "counterpartyOptional": "Counterparty (optional)",
+  "noteOptional": "Note (optional)",
+  "saveChanges": "Save changes",
+
+  "deleteTransaction": "Delete transaction?",
+  "transaction": "Transaction",
+
+  "from": "From",
+  "to": "To",
+  "account": "Account",
+  "date": "Date",
+  "source": "Source",
+  "notifSource": "Notification",
+  "manualSource": "Manual",
+  "balance": "Balance",
+  "noteDetail": "Note",
+  "originalMessage": "Original message",
+
+  "addedDirection": "Added {direction} {amount}",
+  "@addedDirection": {
+    "placeholders": {
+      "direction": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "addTransaction": "Add transaction",
+  "saveTransaction": "Save transaction",
+
+  "dataCapture": "Data Capture",
+  "notificationAccess": "Notification access",
+  "active": "Active",
+  "requiredToAutoCapture": "Required to auto-capture",
+  "enableBtn": "Enable",
+  "smsCapture": "SMS capture",
+  "fallbackNoNotification": "Fallback when no notification",
+  "captureSources": "Capture sources",
+  "allApps": "All apps",
+  "captureSourcesSelected": "{count}/{total} selected",
+  "@captureSourcesSelected": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "captureFromAllApps": "Capture from all apps",
+
+  "security": "Security",
+  "appLockPin": "App lock (PIN)",
+  "requirePinToOpen": "Require PIN to open",
+
+  "appearance": "Appearance",
+  "themeTitle": "Theme",
+  "dark": "Dark",
+  "light": "Light",
+  "systemDefault": "System default",
+
+  "dataSection": "Data",
+  "transactionsCaptured": "Transactions captured",
+  "categoriesTitle": "Categories",
+  "parserLab": "Parser Lab",
+
+  "backupRestore": "Backup and Restore",
+  "exportBtn": "Export",
+  "importBtn": "Import",
+  "importedCount": "Imported {count, plural, =1{# transaction} other{# transactions}}.",
+  "@importedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noValidTransactions": "No valid transactions found.",
+
+  "about": "About",
+  "personalMoneyTracker": "Personal money tracker - v1.0.0",
+  "developer": "Developer",
+  "phone": "Phone",
+  "aboutDescription": "Supports M-Pesa, Mixx by Yas, Airtel Money, HaloPesa and AzamPesa. Your data stays on your device.",
+
+  "failedToOpenSettings": "Failed to open settings: {error}",
+  "@failedToOpenSettings": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "smsPermissionFailed": "SMS permission failed: {error}",
+  "@smsPermissionFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "smsPermissionBlocked": "SMS Permission Blocked",
+  "smsPermissionBlockedMessage": "Google Play Protect is blocking SMS permission for Mapato. To enable SMS capture: Open Google Play Store, tap your profile icon then Play Protect, tap the settings gear icon, turn OFF Improve harmful app protection. This is safe -- Mapato only reads mobile-money SMS. Alternatively, use Notification access only (recommended).",
+
+  "chatHistory": "Chat history",
+  "newChat": "New chat",
+  "history": "History",
+  "mapatoAi": "Mapato AI",
+  "askAboutMoney": "Ask about your spending, saving, or how mobile money works in Tanzania.",
+  "aiUnavailable": "Mapato AI is unavailable right now.",
+  "couldNotReachAi": "Could not reach Mapato AI. Check your connection and try again.",
+  "askHint": "Ask about your money...",
+
+  "categoriesInstruction": "Tap a category to edit its name, color and icon. Custom categories appear when adding or editing transactions.",
+  "newCategory": "New category",
+  "enterCategoryName": "Enter a category name",
+  "editCategory": "Edit category",
+  "name": "Name",
+  "color": "Color",
+  "icon": "Icon",
+  "deleteCategory": "Delete category",
+
+  "parserLabInstruction": "Paste a real money SMS or notification text below to see how Mapato will parse it. Use this to tune lib/parser.dart for each network. Anything that returns no match means the regex needs work.",
+  "recentCaptured": "Recent captured (tap to load)",
+  "noCapturesYet": "No captures yet. Enable notification/SMS access and do a real transfer to populate this list.",
+  "sampleMessage": "Sample message",
+  "noMatch": "No match -- parser returned null. Tune the regexes.",
+  "directionLabel": "Direction",
+  "counterparty": "Counterparty"
+}
+

@@ -1,0 +1,249 @@
+﻿{
+  "@@locale": "sw",
+
+  "appTitle": "Mapato",
+
+  "navHome": "Nyumbani",
+  "navTxns": "Miamala",
+  "navAdd": "Ongeza",
+  "navSettings": "Mipangilio",
+
+  "greetingMorning": "Habari za asubuhi",
+  "greetingAfternoon": "Habari za mchana",
+  "greetingEvening": "Habari za jioni",
+  "moneyOverview": "Hii ni muhtasari wa pesa zako",
+
+  "allTime": "Nyakati zote",
+  "today": "Leo",
+  "last7Days": "Siku 7 zilizopita",
+  "thisMonth": "Mwezi huu",
+  "lastMonth": "Mwezi uliopita",
+  "custom": "Desturi",
+  "all": "Wote",
+  "week": "Wiki",
+  "month": "Mwezi",
+  "lastMo": "Mwezi uliopita",
+  "thisWeek": "Wiki hii",
+
+  "income": "Mapato",
+  "expenses": "Matumizi",
+  "saved": "Imehifadhiwa",
+  "whereMoneyWent": "Pesa yako ilikwenda wapi",
+  "recentActivity": "Shughuli za hivi karibuni",
+  "totalSpent": "Jumla ya matumizi",
+
+  "netFlow": "Mtiririko wa {month}",
+  "@netFlow": {
+    "placeholders": {
+      "month": { "type": "String" }
+    }
+  },
+
+  "savingThisMonth": "Unahifadhi mwezi huu",
+  "spendingExceeded": "Matumizi yamezidi mapato",
+
+  "askMapatoAi": "Uliza Mapato AI",
+  "switchToLight": "Badilisha hadi mwanga",
+  "switchToDark": "Badilisha hadi giza",
+
+  "noTransactionsYet": "Bado hakuna miamala",
+  "notifOnMessage": "Upatikanaji wa arifa uko washwa -- miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki endapo itafika.",
+  "notifOffMessage": "Washesha upatikanaji wa arifa kwenye Mipangilio na miamala yako ya M-Pesa, Mixx, Airtel, HaloPesa na AzamPesa itaonekana hapa otomatiki.",
+  "openSettings": "Fungua Mipangilio",
+
+  "tagline": "Pesa yako, kila mtandao, kwa mtazamo mmoja.",
+
+  "language": "Lugha",
+  "transactions": "Miamala",
+
+  "onboardingWelcomeTitle": "Karibu Mapato",
+  "onboardingWelcomeBody": "Mfuatiliaji wa fedha binafsi uliobuniwa kwa kila mkoba wa pesa mtandaoni wa Mtanzania.",
+  "onboardingCapturesTitle": "Inakamata kila mkoba",
+  "onboardingCapturesBody": "Inasoma kiotomatiki miamala yako ya M-Pesa, Mixx by Yas, Airtel Money, HaloPesa na AzamPesa -- kupitia arifa na SMS.",
+  "onboardingPrivateTitle": "Faragwa kwa muundo",
+  "onboardingPrivateBody": "Kila kitu kinachakatwa na kuhifadhiwa kwenye kifaa chako. Data yako ya fedha haiondoki kwenye simu yako.",
+  "onboardingInsightsTitle": "Maarifa bora",
+  "onboardingInsightsBody": "Angalia mapato, matumizi, na mahali ambapo pesa yako inakwenda -- kwa jamii na kwa mtandao.",
+  "skip": "Ruka",
+  "next": "Endelea",
+  "getStarted": "Anza",
+  "enableNotificationAccess": "Washesha upatikanaji wa arifa",
+
+  "onboardingLanguageTitle": "Chagua lugha yako",
+  "onboardingLanguageSubtitle": "Choose your language",
+  "english": "English",
+  "swahili": "Kiswahili",
+
+  "pinEnterYourPin": "Weka PIN yako",
+  "pinCreate4Digit": "Unda PIN ya nambari 4",
+  "pinEnterCurrent": "Weka PIN ya sasa",
+  "pinIncorrectCurrent": "PIN ya sasa si sahihi",
+  "pinEnterNew": "Weka PIN mpya",
+  "pinConfirmNew": "Thibitisha PIN mpya",
+  "pinMismatch": "PIN hazifanani. Jaribu tena.",
+  "pinConfirmYour": "Thibitisha PIN yako",
+  "pinIncorrect": "PIN si sahihi",
+  "changePin": "Badilisha PIN",
+  "secureTracker": "Linda mfuatiliaji wako wa pesa",
+  "setNewPin": "Weka PIN mpya",
+  "verifyCurrentPin": "Thibitisha PIN yako ya sasa",
+
+  "cancel": "Ghairi",
+  "delete": "Futa",
+  "save": "Hifadhi",
+  "ok": "Sawa",
+  "edit": "Hariri",
+
+  "deleteCountQuestion": "Futa {count, plural, =1{# muamala} other{# miamala}}?",
+  "@deleteCountQuestion": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "actionCannotUndone": "Kitendo hiki hakiwezi kutendwa tena.",
+
+  "searchTransactions": "Tafuta miamala...",
+  "selectedCount": "{count} imechaguliwa",
+  "@selectedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "selectAll": "Chagua zote",
+  "deleteSelected": "Futa zilizochaguliwa",
+  "select": "Chagua",
+
+  "yesterday": "Jana",
+  "noMatches": "Hakuna matokeo.",
+
+  "more": "Zaidi",
+
+  "noTransactionsFound": "Hakuna miamala iliyopatikana. Washesha uchukuzi kwenye Mipangilio, ongeza moja kwa mkono, au badilisha kichujio cha tarehe.",
+  "enterValidAmount": "Weka kiasi sahihi",
+
+  "editTransaction": "Hariri muamala",
+  "spent": "Imetumika",
+  "received": "Imepokelewa",
+  "amountTsh": "Kiasi (Tsh)",
+  "networkLabel": "Mtandao",
+  "categoryLabel": "Jamii",
+  "counterpartyOptional": "Mshirika (si lazima)",
+  "noteOptional": "Kumbuka (si lazima)",
+  "saveChanges": "Hifadhi mabadiliko",
+
+  "deleteTransaction": "Futa muamala?",
+  "transaction": "Muamala",
+
+  "from": "Kutoka",
+  "to": "Kwenda",
+  "account": "Akaunti",
+  "date": "Tarehe",
+  "source": "Chanzo",
+  "notifSource": "Arifa",
+  "manualSource": "Mkono",
+  "balance": "Salio",
+  "noteDetail": "Kumbuka",
+  "originalMessage": "Ujumbe asilia",
+
+  "addedDirection": "Imeongezwa {direction} {amount}",
+  "@addedDirection": {
+    "placeholders": {
+      "direction": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "addTransaction": "Ongeza muamala",
+  "saveTransaction": "Hifadhi muamala",
+
+  "dataCapture": "Uchukuzi wa Data",
+  "notificationAccess": "Upatikanaji wa arifa",
+  "active": "Hai",
+  "requiredToAutoCapture": "Inahitajika ili kukamata kiotomatiki",
+  "enableBtn": "Washa",
+  "smsCapture": "Uchukuzi wa SMS",
+  "fallbackNoNotification": "Mfumo wa kufanya hakuna arifa",
+  "captureSources": "Vyanzo vya uchukuzi",
+  "allApps": "Programu zote",
+  "captureSourcesSelected": "{count}/{total} zimechaguliwa",
+  "@captureSourcesSelected": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "captureFromAllApps": "Kukamata kutoka programu zote",
+
+  "security": "Usalama",
+  "appLockPin": "Kufunga programu (PIN)",
+  "requirePinToOpen": "Hitaji PIN kufungua",
+
+  "appearance": "Mwonekano",
+  "themeTitle": "Mandhari",
+  "dark": "Giza",
+  "light": "Nuru",
+  "systemDefault": "Mfumo chaguo-msingi",
+
+  "dataSection": "Data",
+  "transactionsCaptured": "Miamala iliyokamata",
+  "categoriesTitle": "Jamii",
+  "parserLab": "Maabara ya Paresa",
+
+  "backupRestore": "Uhifadhi na Urejesho",
+  "exportBtn": "Hamisha",
+  "importBtn": "Ingiza",
+  "importedCount": "Imeingizwa {count, plural, =1{# muamala} other{# miamala}}.",
+  "@importedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noValidTransactions": "Hakuna miamala sahihi iliyopatikana.",
+
+  "about": "Kuhusu",
+  "personalMoneyTracker": "Mfuatiliaji wa pesa binafsi - v1.0.0",
+  "developer": "Msanidi",
+  "phone": "Simu",
+  "aboutDescription": "Inasaidia M-Pesa, Mixx by Yas, Airtel Money, HaloPesa na AzamPesa. Data yako inabaki kwenye kifaa chako.",
+
+  "failedToOpenSettings": "Imeshindikana kufungua mipangilio: {error}",
+  "@failedToOpenSettings": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "smsPermissionFailed": "Ruhusa ya SMS imeshindikana: {error}",
+  "@smsPermissionFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "smsPermissionBlocked": "Ruhusa ya SMS Imezuiwa",
+  "smsPermissionBlockedMessage": "Google Play Protect inazuia ruhusa ya SMS kwa Mapato. Ili kuwezesha uchukuzi wa SMS: Fungua Google Play Store, gusa ikoni ya wasifu yako kisha Play Protect, gusa ikoni ya vifaa vya mipangilio, ZIMA Improve harmful app protection. Hii ni salama -- Mapato inasoma SMS za pesa mtandaoni tu. Vinginevyo, tumia Upatilianaji wa arifa tu (inapendekezwa).",
+
+  "chatHistory": "Historia ya mazungumzo",
+  "newChat": "Mazungumzo mapya",
+  "history": "Historia",
+  "mapatoAi": "Mapato AI",
+  "askAboutMoney": "Uliza kuhusu matumizi yako, uhifadhi, au jinsi pesa mtandaoni inavyofanya kazi nchini Tanzania.",
+  "aiUnavailable": "Mapato AI haipatikani sasa hivi.",
+  "couldNotReachAi": "Haiwezi kufikia Mapato AI. Angalia muunganisho wako na jaribu tena.",
+  "askHint": "Uliza kuhusu pesa zako...",
+
+  "categoriesInstruction": "Gusa jamii ili kuhariri jina, rangi na ikoni yake. Jamii maalum zinaonekana unapoongeza au kuhariri miamala.",
+  "newCategory": "Jamii mpya",
+  "enterCategoryName": "Weka jina la jamii",
+  "editCategory": "Hariri jamii",
+  "name": "Jina",
+  "color": "Rangi",
+  "icon": "Ikoni",
+  "deleteCategory": "Futa jamii",
+
+  "parserLabInstruction": "Bandika ujumbe wa SMS/pesa halisi hapo chini kuona jinsi Mapato itakavyouparsa. Tumia hii kusasisha lib/parser.dart kwa kila mtandao. Yoyote ambayo haitafanikiwa inamaanisha regex inahitaji kazi.",
+  "recentCaptured": "Vilivyokamata hivi karibuni (gusa kulia)",
+  "noCapturesYet": "Bado hakuna vilivyokamata. Wezesha upatikanaji wa arifa/SMS na fanya uhamisho halisi ili kujaza orodha hii.",
+  "sampleMessage": "Ujumbe wa mfano",
+  "noMatch": "Hakuna mechi -- parser imerudisha null. Sasisha regex.",
+  "directionLabel": "Mwelekeo",
+  "counterparty": "Mshirika"
+}
+

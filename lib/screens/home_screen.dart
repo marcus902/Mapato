@@ -1,7 +1,9 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mapato/database.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/screens/chat_screen.dart';
@@ -72,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final state = context.watch<AppState>();
     final txns = state.transactions;
 
@@ -91,12 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
 
     final rangeLabel = switch (_range) {
-      _Range.all => 'All time',
-      _Range.today => 'Today',
-      _Range.week => 'Last 7 days',
-      _Range.month => 'This month',
-      _Range.lastMonth => 'Last month',
-      _Range.custom => 'Custom',
+      _Range.all => s.allTime,
+      _Range.today => s.today,
+      _Range.week => s.last7Days,
+      _Range.month => s.thisMonth,
+      _Range.lastMonth => s.lastMonth,
+      _Range.custom => s.custom,
     };
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -121,14 +124,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Ask Mapato AI',
+            tooltip: s.askMapatoAi,
             icon: const Icon(Icons.chat_bubble_outline_rounded),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ChatScreen()),
             ),
           ),
           IconButton(
-            tooltip: isDark ? 'Switch to light' : 'Switch to dark',
+            tooltip: isDark ? s.switchToLight : s.switchToDark,
             icon: Icon(isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded),
             onPressed: state.toggleTheme,
           ),
@@ -151,12 +154,12 @@ class _HomeScreenState extends State<HomeScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _RangeChip(label: 'All', selected: _range == _Range.all, onTap: () => setState(() => _range = _Range.all)),
-                  _RangeChip(label: 'Today', selected: _range == _Range.today, onTap: () => setState(() => _range = _Range.today)),
-                  _RangeChip(label: 'Week', selected: _range == _Range.week, onTap: () => setState(() => _range = _Range.week)),
-                  _RangeChip(label: 'Month', selected: _range == _Range.month, onTap: () => setState(() => _range = _Range.month)),
-                  _RangeChip(label: 'Last mo', selected: _range == _Range.lastMonth, onTap: () => setState(() => _range = _Range.lastMonth)),
-                  _RangeChip(label: 'Custom', selected: _range == _Range.custom, onTap: _pickCustom),
+                  _RangeChip(label: s.all, selected: _range == _Range.all, onTap: () => setState(() => _range = _Range.all)),
+                  _RangeChip(label: s.today, selected: _range == _Range.today, onTap: () => setState(() => _range = _Range.today)),
+                  _RangeChip(label: s.week, selected: _range == _Range.week, onTap: () => setState(() => _range = _Range.week)),
+                  _RangeChip(label: s.month, selected: _range == _Range.month, onTap: () => setState(() => _range = _Range.month)),
+                  _RangeChip(label: s.lastMo, selected: _range == _Range.lastMonth, onTap: () => setState(() => _range = _Range.lastMonth)),
+                  _RangeChip(label: s.custom, selected: _range == _Range.custom, onTap: _pickCustom),
                 ],
               ),
             ),
@@ -165,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: _MiniStat(
-                    label: 'Income',
+                    label: s.income,
                     value: tzs(inSum),
                     color: AppColors.income,
                     icon: Icons.arrow_downward_rounded,
@@ -174,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: _MiniStat(
-                    label: 'Expenses',
+                    label: s.expenses,
                     value: tzs(outSum),
                     color: AppColors.expense,
                     icon: Icons.arrow_upward_rounded,
@@ -183,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: _MiniStat(
-                    label: 'Saved',
+                    label: s.saved,
                     value: tzs(savedSum),
                     color: AppColors.savings,
                     icon: Icons.savings_outlined,
@@ -193,16 +196,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
             if (outSum > 0) ...[
-              _SectionTitle('Where your money went', action: rangeLabel),
+              _SectionTitle(s.whereMoneyWent, action: rangeLabel),
               const SizedBox(height: 12),
               _BreakdownCard(slices: slices, totalOut: outSum),
               const SizedBox(height: 24),
             ],
-            _SectionTitle('Recent activity', action: rangeLabel),
+            _SectionTitle(s.recentActivity, action: rangeLabel),
             const SizedBox(height: 12),
           ...filtered.take(6).map((t) => _TxnTile(t)),
         ],
-      ),
+        ),
       ),
       ),
     );
@@ -227,12 +230,13 @@ class _HomeScreenState extends State<HomeScreen> {
 class _Greeting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final hour = DateTime.now().hour;
     final greeting = switch (hour) {
-      < 12 => 'Good morning',
-      < 17 => 'Good afternoon',
-      _ => 'Good evening',
+      < 12 => s.greetingMorning,
+      < 17 => s.greetingAfternoon,
+      _ => s.greetingEvening,
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +245,7 @@ class _Greeting extends StatelessWidget {
             style: TextStyle(
                 fontSize: 14, color: cs.onSurface.withOpacity(0.6))),
         const SizedBox(height: 2),
-        Text('Here is your money overview',
+        Text(s.moneyOverview,
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
@@ -264,11 +268,9 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final now = DateTime.now();
-    final month = const [
-      '', 'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ][now.month];
+    final month = DateFormat('MMMM', Localizations.localeOf(context).languageCode).format(now);
     return Container(
       decoration: BoxDecoration(
         gradient: brandGradient,
@@ -298,7 +300,7 @@ class _HeroCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                '$month net flow',
+                s.netFlow(month),
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -319,7 +321,7 @@ class _HeroCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            net >= 0 ? 'You are saving this month' : 'Spending exceeded income',
+            net >= 0 ? s.savingThisMonth : s.spendingExceeded,
             style: TextStyle(
               color: Colors.white.withOpacity(0.85),
               fontSize: 13,
@@ -432,6 +434,7 @@ class _BreakdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(18),
@@ -448,7 +451,7 @@ class _BreakdownCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Total spent',
+                Text(s.totalSpent,
                     style: TextStyle(
                         color: cs.onSurface.withOpacity(0.6), fontSize: 12)),
                 const SizedBox(height: 2),
@@ -646,6 +649,7 @@ class _EmptyHomeState extends State<_EmptyHome>
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     final cs = Theme.of(context).colorScheme;
     final notifEnabled = _notifEnabled ?? false;
     return SafeArea(
@@ -661,16 +665,16 @@ class _EmptyHomeState extends State<_EmptyHome>
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('Mapato',
+              children: [
+                const Text('Mapato',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 28,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.5)),
-                SizedBox(height: 6),
-                Text('Your money, every network, one view.',
-                    style: TextStyle(color: Colors.white, fontSize: 14)),
+                const SizedBox(height: 6),
+                Text(s.tagline,
+                    style: const TextStyle(color: Colors.white, fontSize: 14)),
               ],
             ),
           ),
@@ -693,18 +697,12 @@ class _EmptyHomeState extends State<_EmptyHome>
                       ? AppColors.income
                       : AppColors.primary.withOpacity(0.7)),
                 const SizedBox(height: 12),
-                const Text('No transactions yet',
+                Text(s.noTransactionsYet,
                     style:
-                        TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                        const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 6),
                 Text(
-                  notifEnabled
-                      ? 'Notification access is on — your M-Pesa, Mixx, Airtel, '
-                        'HaloPesa & AzamPesa transactions will appear here '
-                        'automatically as they arrive.'
-                      : 'Enable notification access in Settings and your '
-                        'M-Pesa, Mixx, Airtel, HaloPesa & AzamPesa transactions '
-                        'will appear here automatically.',
+                  notifEnabled ? s.notifOnMessage : s.notifOffMessage,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: cs.onSurfaceVariant),
                 ),
@@ -712,7 +710,7 @@ class _EmptyHomeState extends State<_EmptyHome>
                 if (!notifEnabled)
                   FilledButton.tonal(
                     onPressed: widget.onOpenSettings,
-                    child: const Text('Open Settings'),
+                    child: Text(s.openSettings),
                   ),
               ],
             ),
@@ -796,4 +794,3 @@ class _DonutPainter extends CustomPainter {
 
 String _time(DateTime d) =>
     '${d.day}/${d.month}/${d.year} ${d.hour}:${d.minute.toString().padLeft(2, '0')}';
-

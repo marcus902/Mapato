@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/screens/splash_screen.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
@@ -23,6 +25,14 @@ class MapatoApp extends StatelessWidget {
           theme: buildAppTheme(),
           darkTheme: buildDarkTheme(),
           themeMode: state.themeMode,
+          locale: state.locale,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           home: const SplashScreen(),
         ),
       ),

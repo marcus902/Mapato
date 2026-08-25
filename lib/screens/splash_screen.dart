@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/native.dart';
 import 'package:mapato/screens/onboarding_screen.dart';
 import 'package:mapato/screens/root.dart';
@@ -34,6 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Center(
@@ -62,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Your money, every network, one view.',
+              s.tagline,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.85),
                 fontSize: 14,

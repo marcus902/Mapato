@@ -113,6 +113,7 @@ class AppState extends ChangeNotifier {
 
   AppState() {
     _loadTheme();
+    _loadLocale();
     _init();
   }
 
@@ -330,4 +331,24 @@ class AppState extends ChangeNotifier {
       .fold(0.0, (s, t) => s + t.amount);
 
   double get net => totalIn - totalOut;
+
+  // --- Locale ---
+  Locale _locale = const Locale('en');
+  Locale get locale => _locale;
+
+  void _loadLocale() {
+    getPrefString('language_code', '').then((v) {
+      if (v.isNotEmpty && _locale.languageCode != v) {
+        _locale = Locale(v);
+        notifyListeners();
+      }
+    });
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    if (_locale == locale) return;
+    _locale = locale;
+    await setPrefString('language_code', locale.languageCode);
+    notifyListeners();
+  }
 }
