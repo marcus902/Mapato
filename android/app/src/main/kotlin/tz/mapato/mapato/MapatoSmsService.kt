@@ -31,14 +31,18 @@ class MapatoSmsService : Service() {
         val channel = NotificationChannel(
             "mapato_sms",
             "SMS Capture",
-            NotificationManager.IMPORTANCE_LOW
-        )
+            NotificationManager.IMPORTANCE_MIN
+        ).apply {
+            description = "Required to keep Mapato listening for mobile money messages"
+            setShowBadge(false)
+        }
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         nm.createNotificationChannel(channel)
         return NotificationCompat.Builder(this, "mapato_sms")
-            .setContentTitle("Mapato")
-            .setContentText("Listening for mobile money messages...")
+            .setContentTitle("")
+            .setContentText("")
             .setSmallIcon(applicationInfo.icon)
+            .setPriority(NotificationCompat.PRIORITY_MIN)
             .setOngoing(true)
             .build()
     }
