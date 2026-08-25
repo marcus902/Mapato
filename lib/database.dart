@@ -117,6 +117,21 @@ class AppDatabase extends _$AppDatabase {
         .then((rows) => rows.isNotEmpty);
   }
 
+  /// True if a duplicate exists by amount + direction within [window],
+  /// regardless of network. Catches the same payment showing up from
+  /// both the MNO app and the bank app.
+  Future<bool> hasDuplicateLoose(
+      double amount, String direction, Duration window) {
+    final since = DateTime.now().subtract(window);
+    return (select(transactions)
+          ..where((t) =>
+              t.amount.equals(amount) &
+              t.direction.equals(direction) &
+              t.timestamp.isBiggerThanValue(since)))
+        .get()
+        .then((rows) => rows.isNotEmpty);
+  }
+
   /// Replaces every column of the row identified by the companion's id.
   Future<void> updateTx(TransactionsCompanion entry) =>
       update(transactions).replace(entry);

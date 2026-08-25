@@ -259,15 +259,23 @@ class AppState extends ChangeNotifier {
       if (dup) return;
     }
     // Drop duplicates when both notification + SMS capture the same
-    // transaction (same amount, network, direction within 5 minutes).
+    // transaction (same amount, network, direction within 30 minutes).
     if (c.amount.present && c.network.present && c.direction.present) {
       final dup = await db.hasDuplicate(
         c.amount.value,
         c.network.value,
         c.direction.value,
-        const Duration(minutes: 5),
+        const Duration(minutes: 30),
       );
       if (dup) return;
+      // Also catch same amount + direction across different networks
+      // (e.g., HaloPesa notification + bank SMS for the same payment).
+      final dupLoose = await db.hasDuplicateLoose(
+        c.amount.value,
+        c.direction.value,
+        const Duration(minutes: 30),
+      );
+      if (dupLoose) return;
     }
     final id = await db.insertTx(c);
     _lastCapturedId = id;
