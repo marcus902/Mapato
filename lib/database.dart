@@ -101,6 +101,22 @@ class AppDatabase extends _$AppDatabase {
           .get()
           .then((rows) => rows.isNotEmpty);
 
+  /// True if a transaction with the same amount, network, and direction exists
+  /// within [window]. Used to prevent duplicates from both notification + SMS
+  /// capturing the same transaction.
+  Future<bool> hasDuplicate(
+      double amount, String network, String direction, Duration window) {
+    final since = DateTime.now().subtract(window);
+    return (select(transactions)
+          ..where((t) =>
+              t.amount.equals(amount) &
+              t.network.equals(network) &
+              t.direction.equals(direction) &
+              t.timestamp.isBiggerThanValue(since)))
+        .get()
+        .then((rows) => rows.isNotEmpty);
+  }
+
   /// Replaces every column of the row identified by the companion's id.
   Future<void> updateTx(TransactionsCompanion entry) =>
       update(transactions).replace(entry);

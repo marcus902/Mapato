@@ -250,12 +250,22 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _insert(TransactionsCompanion c) async {
-    // Drop duplicate captures (e.g. when the listener restarts and the same
-    // notification is delivered again).
+    // Drop duplicate captures from the same raw text (listener restart).
     if (c.raw.present && c.raw.value != null) {
       final dup = await db.hasRawSince(
         c.raw.value!,
         DateTime.now().subtract(const Duration(hours: 24)),
+      );
+      if (dup) return;
+    }
+    // Drop duplicates when both notification + SMS capture the same
+    // transaction (same amount, network, direction within 5 minutes).
+    if (c.amount.present && c.network.present && c.direction.present) {
+      final dup = await db.hasDuplicate(
+        c.amount.value,
+        c.network.value,
+        c.direction.value,
+        const Duration(minutes: 5),
       );
       if (dup) return;
     }
