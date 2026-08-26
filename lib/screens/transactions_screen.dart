@@ -282,9 +282,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 _RangeChips(
                   ranges: _ranges,
                   selected: _range,
-                  onTap: (r) {
+                  onTap: (r) async {
                     if (r == 'custom') {
-                      _pickRange();
+                      await _pickRange();
+                      if (_from == null) return;
                     }
                     setState(() => _range = r);
                   },
@@ -902,7 +903,7 @@ class TransactionDetailScreen extends StatelessWidget {
     );
     if (ok == true && context.mounted) {
       await context.read<AppState>().deleteTx(t.id);
-      Navigator.of(context).pop();
+      if (context.mounted) Navigator.of(context).pop();
     }
   }
 

@@ -175,5 +175,9 @@ Future<String?> pickCsvFile() async {
   );
   if (result == null || result.isEmpty) return null;
   final bytes = await result.first.readAsBytes();
-  return utf8.decode(bytes);
+  try {
+    return utf8.decode(bytes);
+  } catch (_) {
+    return latin1.decode(bytes);
+  }
 }

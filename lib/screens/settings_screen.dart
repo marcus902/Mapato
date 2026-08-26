@@ -14,36 +14,6 @@ import 'package:provider/provider.dart';
 const _captureChannel = MethodChannel('tz.mapato/capture');
 const _smsPrefKey = 'sms_capture_enabled';
 
-class _CaptureSource {
-  final String label;
-  final String pkg;
-  const _CaptureSource(this.label, this.pkg);
-}
-
-const _captureSources = [
-  // Mobile money
-  _CaptureSource('M-Pesa', 'com.vodacom.mpesa'),
-  _CaptureSource('Mixx by Yas', 'tz.tigo.mfsapp'),
-  _CaptureSource('Tigo Pesa (legacy)', 'com.tigo.pesa'),
-  _CaptureSource('Airtel Money', 'com.airtel.money'),
-  _CaptureSource('HaloPesa', 'com.halopesa.eu'),
-  _CaptureSource('HaloPesa (legacy)', 'tz.co.halo.halopesa'),
-  _CaptureSource('AzamPesa', 'com.azampesa'),
-  // Banks
-  _CaptureSource('CRDB Bank', 'com.crdbbank'),
-  _CaptureSource('NMB Bank', 'com.nmb.bank'),
-  _CaptureSource('TTB Bank', 'com.ttb.mobilebanking'),
-  _CaptureSource('Stanbic Bank', 'com.stanbicbank.tz'),
-  _CaptureSource('NBC Bank', 'com.nbcbank'),
-  _CaptureSource('Absa Bank', 'com.absa.link'),
-  _CaptureSource('Exim Bank', 'com.eximbank'),
-  _CaptureSource('KCB Bank', 'com.kcbgroup.tz'),
-  _CaptureSource('DTB', 'com.diamondtrustbank'),
-  _CaptureSource('Azania Bank', 'com.azaniabank'),
-  _CaptureSource('Akiba Bank', 'com.akibabank'),
-  _CaptureSource('TIB', 'com.tib.co.tz'),
-];
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -56,10 +26,6 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _smsEnabled = false;
   bool _notifEnabled = false;
   bool _loading = true;
-
-  bool _captureAll = false;
-  final Set<String> _captureSet = {};
-  bool _captureLoading = true;
 
   bool _debugMode = false;
   int _versionTaps = 0;
@@ -91,10 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen>
   Future<void> _initState() async {
     final notif = await isNotificationListenerEnabled();
     await _initSmsState();
-    await _initCaptureState();
     if (!mounted) return;
-    setState(() => _notifEnabled = notif);
-    _loading = false;
+    setState(() {
+      _notifEnabled = notif;
+      _loading = false;
+    });
   }
 
   Future<void> _initSmsState() async {
@@ -111,43 +78,6 @@ class _SettingsScreenState extends State<SettingsScreen>
     }
     if (!mounted) return;
     setState(() => _smsEnabled = active);
-  }
-
-  Future<void> _initCaptureState() async {
-    final all = await getPrefBool('capture_all');
-    final csv = await getPrefString('capture_packages');
-    final set = csv.isEmpty
-        ? _captureSources.map((source) => source.pkg).toSet()
-        : csv.split(',').where((e) => e.isNotEmpty).toSet();
-    if (csv.isEmpty) {
-      await setPrefString('capture_packages', set.join(','));
-    }
-    if (!mounted) return;
-    setState(() {
-      _captureAll = all;
-      _captureSet
-        ..clear()
-        ..addAll(set);
-      _captureLoading = false;
-    });
-  }
-
-  Future<void> _setCaptureAll(bool value) async {
-    if (!mounted) return;
-    setState(() => _captureAll = value);
-    await setPrefBool('capture_all', value);
-  }
-
-  Future<void> _toggleSource(String pkg, bool value) async {
-    if (!mounted) return;
-    setState(() {
-      if (value) {
-        _captureSet.add(pkg);
-      } else {
-        _captureSet.remove(pkg);
-      }
-    });
-    await setPrefString('capture_packages', _captureSet.join(','));
   }
 
   Future<void> _toggleSms(bool value) async {
@@ -289,38 +219,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                 onChanged: _loading ? null : _toggleSms,
               ),
               const Divider(height: 1),
-              ExpansionTile(
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                leading: const Icon(Icons.apps, size: 22),
-                title: Text(s.captureSources, style: const TextStyle(fontSize: 14)),
-                subtitle: Text(
-                  _captureAll
-                      ? s.allApps
-                      : s.captureSourcesSelected(_captureSet.length, _captureSources.length),
-                  style: const TextStyle(fontSize: 12),
-                ),
-                childrenPadding: const EdgeInsets.only(left: 16),
-                children: [
-                  SwitchListTile(
-                    dense: true,
-                    visualDensity: VisualDensity.compact,
-                    title: Text(s.captureFromAllApps, style: const TextStyle(fontSize: 13)),
-                    value: _captureLoading ? false : _captureAll,
-                    onChanged: _captureLoading ? null : _setCaptureAll,
-                  ),
-                  if (!_captureAll)
-                    ..._captureSources.map((source) => SwitchListTile(
-                          dense: true,
-                          visualDensity: VisualDensity.compact,
-                          title: Text(source.label, style: const TextStyle(fontSize: 13)),
-                          value: _captureSet.contains(source.pkg),
-                          onChanged: _captureLoading
-                              ? null
-                              : (v) => _toggleSource(source.pkg, v),
-                        )),
-                ],
-              ),
             ],
           ),
         ),

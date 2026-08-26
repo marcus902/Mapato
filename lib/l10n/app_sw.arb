@@ -265,7 +265,6 @@
 
   "notifAccessDialogTitle": "Washesha upatikanaji wa arifa",
   "notifAccessDialogBody": "1. Gusa Fungua Mipangilio hapa chini\n2. Tafuta Mapato kwenye orodha\n3. Gusa na weka ON\n4. Thibitisha onyo\n5. Bofya kurudi Mapato\n\nIkiko Mapato haijaorodheshwa, programu inahitaji kufunguliwa tena baada ya usakinishaji.",
-  "openSettings": "Fungua Mipangilio",
 
   "aiSection": "Mapato AI",
   "groqApiKey": "Ufunguo wa Groq API",

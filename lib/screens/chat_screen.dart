@@ -168,14 +168,19 @@ class _ChatScreenState extends State<ChatScreen> {
     final s = AppLocalizations.of(context);
     final text = _controller.text.trim();
     if (text.isEmpty || _busy) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
     final key = await _apiKey();
     if (key.isEmpty) {
-      setState(() => _error = s.aiUnavailable);
+      setState(() {
+        _error = s.aiUnavailable;
+        _busy = false;
+      });
       return;
     }
     setState(() {
-      _error = null;
-      _busy = true;
       _messages.add(_Msg('user', text));
       _controller.clear();
     });
@@ -243,6 +248,7 @@ ${_buildContext()}
       }
       final json = jsonDecode(raw) as Map<String, dynamic>;
       final choices = json['choices'] as List<dynamic>;
+      if (choices.isEmpty) throw 'Empty response from AI';
       return choices.first['message']['content'] as String;
     } finally {
       client.close();
