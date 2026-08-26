@@ -32,26 +32,7 @@ class MapatoNotificationService : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        if (sbn == null) return
-        val pkg = sbn.packageName ?: return
-        val allowed = allowedPackages()
-        if (allowed != null && pkg !in allowed) return
-
-        val extras: Bundle = sbn.notification.extras ?: return
-        val title = extras.getCharSequence("android.title")?.toString() ?: ""
-        val text = extras.getCharSequence("android.text")?.toString() ?: ""
-        val bigText = extras.getCharSequence("android.bigText")?.toString() ?: ""
-        val combined = "$title\n$text\n$bigText"
-
-        if (combined.isBlank()) return
-
-        // Operator apps are trusted outright. For any other app (e.g. the SMS
-        // app showing a message, or a chat app), only capture when the sender
-        // clearly looks like a mobile-money source — so personal chatter is
-        // never recorded as a transaction.
-        if (!MnoFilters.isMnoPackage(pkg) && !MnoFilters.isMnoSender(title)) return
-
-        NotificationBridge.emit(combined)
+        // Intentionally empty — all capture is done via SMS only.
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {}
