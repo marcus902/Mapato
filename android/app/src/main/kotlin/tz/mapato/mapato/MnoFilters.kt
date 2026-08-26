@@ -15,7 +15,7 @@ object MnoFilters {
         "halo", "halopesa",
         "azam", "azampesa",
         "mobile money", "mobility",
-        // Banks
+        // Banks — only captured via SMS, NOT via notification listener
         "crdb", "nmb", "ttb", "stanbic", "nbc",
         "absa", "exim", "kcb", "equity", "dtb",
         "azania", "akiba", "tib", "fbm",
@@ -43,18 +43,5 @@ object MnoFilters {
         "com.halopesa.eu",
         "tz.co.halo.halopesa",
         "com.azampesa",
-        // Tanzanian banks
-        "com.crdbbank",
-        "com.nmb.bank",
-        "com.ttb.mobilebanking",
-        "com.stanbicbank.tz",
-        "com.nbcbank",
-        "com.absa.link",
-        "com.eximbank",
-        "com.kcbgroup.tz",
-        "com.diamondtrustbank",
-        "com.azaniabank",
-        "com.akibabank",
-        "com.tib.co.tz",
     )
 }
