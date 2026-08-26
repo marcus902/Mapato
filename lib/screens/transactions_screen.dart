@@ -542,7 +542,7 @@ class _TxnRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      t.counterparty ?? t.category,
+                      t.counterparty ?? localizedCategoryName(t.category, context),
                       style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 14.5,
@@ -552,8 +552,8 @@ class _TxnRow extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Row(
-                      children: [
-                        _NetBadge(network: t.network),
+                        children: [
+                          _NetBadge(network: t.network),
                         const SizedBox(width: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -562,8 +562,8 @@ class _TxnRow extends StatelessWidget {
                             color: catColor.withOpacity(0.14),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
-                            t.category,
+                           child: Text(
+                            localizedCategoryName(t.category, context),
                             style: TextStyle(
                               color: catColor,
                               fontSize: 10.5,
@@ -818,7 +818,7 @@ class _EditTxnSheetState extends State<_EditTxnSheet> {
             runSpacing: 8,
             children: categories
                 .map((c) => ChoiceChip(
-                      label: Text(c.name),
+                      label: Text(localizedCategoryName(c.name, context)),
                       selected: _category == c.name,
                       avatar: Icon(state.categoryIcon(c.name), size: 16),
                       onSelected: (_) => setState(() {
@@ -973,7 +973,7 @@ class TransactionDetailScreen extends StatelessWidget {
             icon: catIcon,
             iconColor: catColor,
             label: s.categoryLabel,
-            value: t.category,
+            value: localizedCategoryName(t.category, context),
           ),
           if (t.counterparty != null && t.counterparty.isNotEmpty)
             _DetailRow(

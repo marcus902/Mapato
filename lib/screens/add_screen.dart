@@ -115,7 +115,7 @@ class _AddScreenState extends State<AddScreen> {
             runSpacing: 8,
             children: categories
                 .map((c) => ChoiceChip(
-                      label: Text(c.name),
+                      label: Text(localizedCategoryName(c.name, context)),
                       selected: _category == c.name,
                       avatar: Icon(state.categoryIcon(c.name), size: 16),
                       onSelected: (_) => setState(() {

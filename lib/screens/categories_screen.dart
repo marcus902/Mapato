@@ -3,6 +3,7 @@ import 'package:mapato/database.dart';
 import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/state/app_state.dart';
 import 'package:mapato/theme.dart';
+import 'package:mapato/utils.dart';
 import 'package:provider/provider.dart';
 
 /// Palette offered when creating/editing a category.
@@ -79,7 +80,7 @@ class CategoriesScreen extends StatelessWidget {
                   child: Icon(IconData(c.icon, fontFamily: 'MaterialIcons'),
                       color: Color(c.color)),
                 ),
-                title: Text(c.name,
+                title: Text(localizedCategoryName(c.name, context),
                     style: const TextStyle(fontWeight: FontWeight.w700)),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => _openEditor(context, state, c),

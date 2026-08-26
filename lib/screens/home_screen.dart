@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .map((e) => _Slice(
               value: e.value,
               color: state.categoryColor(e.key),
-              label: e.key,
+              label: localizedCategoryName(e.key, context),
             ))
         .toList();
 
@@ -549,7 +549,7 @@ class _TxnTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  t.counterparty ?? t.category,
+                  t.counterparty ?? localizedCategoryName(t.category, context),
                   style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 14.5,

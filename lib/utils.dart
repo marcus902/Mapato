@@ -7,6 +7,34 @@ final _fmt = NumberFormat('#,##0', 'en_US');
 
 String tzs(double value) => 'Tsh ${_fmt.format(value.round())}';
 
+/// English → Swahili category name translation.
+const Map<String, String> _categorySw = {
+  'Incoming': 'Mapato',
+  'Uncategorized': 'Haijachaguliwa',
+  'Food': 'Chakula',
+  'Transport': 'Usafiri',
+  'Shopping': 'Manunuzi',
+  'Bills': 'Bili',
+  'Rent': 'Kodi',
+  'Airtime': 'Piga Simu',
+  'Internet': 'Mtandao',
+  'Education': 'Elimu',
+  'Health': 'Afya',
+  'Entertainment': 'Burudani',
+  'Family': 'Familia',
+  'Savings': 'Akiba',
+  'Business': 'Biashara',
+  'Salary': 'Mshahara',
+  'Other': 'Nyingine',
+};
+
+/// Localized category name. Falls back to the original English name.
+String localizedCategoryName(String name, BuildContext context) {
+  final locale = Localizations.localeOf(context).languageCode;
+  if (locale == 'sw') return _categorySw[name] ?? name;
+  return name;
+}
+
 /// Category names that represent money moving into savings (your own money,
 /// treated separately from income/spending).
 const Set<String> _savingsCategoryNames = {
