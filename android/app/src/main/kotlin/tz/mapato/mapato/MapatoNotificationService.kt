@@ -32,7 +32,22 @@ class MapatoNotificationService : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
-        // Intentionally empty — all capture is done via SMS only.
+        if (sbn == null) return
+        val pkg = sbn.packageName ?: return
+        val allowed = allowedPackages()
+        if (allowed != null && pkg !in allowed) return
+
+        val extras: Bundle = sbn.notification.extras ?: return
+        val title = extras.getCharSequence("android.title")?.toString() ?: ""
+        val text = extras.getCharSequence("android.text")?.toString() ?: ""
+        val bigText = extras.getCharSequence("android.bigText")?.toString() ?: ""
+        val combined = "$title\n$text\n$bigText"
+
+        if (combined.isBlank()) return
+
+        if (!MnoFilters.isMnoPackage(pkg) && !MnoFilters.isMnoSender(title)) return
+
+        NotificationBridge.emit(combined)
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {}
