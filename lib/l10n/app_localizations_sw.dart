@@ -174,7 +174,8 @@ class AppLocalizationsSw extends AppLocalizations {
   String get onboardingLanguageTitle => 'Chagua lugha yako';
 
   @override
-  String get onboardingLanguageSubtitle => 'Choose your language';
+  String get onboardingLanguageSubtitle =>
+      'Chagua lugha yako. Unaweza kubadilisha baadaye kwenye Mipangilio.';
 
   @override
   String get english => 'English';
@@ -634,4 +635,27 @@ class AppLocalizationsSw extends AppLocalizations {
 
   @override
   String get aiModelDesc => 'Chagua mfumo wa kutumia';
+
+  @override
+  String get directionReceived => 'Imepokelewa';
+
+  @override
+  String get directionSpent => 'Imetumika';
+
+  @override
+  String get directionSaved => 'Imehifadhiwa';
+
+  @override
+  String get smsCaptureFailed => 'Umatizaji wa SMS umeshindikana';
+
+  @override
+  String get exportSubject => 'Mapato - muamala';
+
+  @override
+  String exportText(Object count) {
+    return 'Hamisha muamala wa Mapato (safu $count)';
+  }
+
+  @override
+  String get debugTools => 'Vyombo vya ukaguzi';
 }

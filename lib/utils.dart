@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mapato/l10n/app_localizations.dart';
 import 'package:mapato/theme.dart';
 
 final _fmt = NumberFormat('#,##0', 'en_US');
@@ -59,13 +60,14 @@ Color directionColor(String direction) {
 }
 
 /// Human label for a transaction direction.
-String directionLabel(String direction) {
+String directionLabel(String direction, {BuildContext? context}) {
+  final s = context != null ? AppLocalizations.of(context) : null;
   switch (direction) {
     case 'in':
-      return 'Received';
+      return s?.directionReceived ?? 'Received';
     case 'transfer':
-      return 'Saved';
+      return s?.directionSaved ?? 'Saved';
     default:
-      return 'Spent';
+      return s?.directionSpent ?? 'Spent';
   }
 }

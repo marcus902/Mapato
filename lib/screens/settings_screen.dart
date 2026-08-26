@@ -61,6 +61,9 @@ class _SettingsScreenState extends State<SettingsScreen>
   final Set<String> _captureSet = {};
   bool _captureLoading = true;
 
+  bool _debugMode = false;
+  int _versionTaps = 0;
+
   @override
   void initState() {
     super.initState();
@@ -186,7 +189,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       } on PlatformException catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('SMS capture failed: $e')));
+            .showSnackBar(SnackBar(content: Text('${s.smsCaptureFailed}: $e')));
         return;
       }
       if (!mounted) return;
@@ -503,16 +506,17 @@ class _SettingsScreenState extends State<SettingsScreen>
                 ),
               ),
               const Divider(height: 1),
-              ListTile(
-                dense: true,
-                visualDensity: VisualDensity.compact,
-                leading: const Icon(Icons.science, size: 22),
-                title: Text(s.parserLab, style: const TextStyle(fontSize: 14)),
-                trailing: const Icon(Icons.chevron_right, size: 20),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ParserLabScreen()),
+              if (_debugMode)
+                ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  leading: const Icon(Icons.science, size: 22),
+                  title: Text(s.parserLab, style: const TextStyle(fontSize: 14)),
+                  trailing: const Icon(Icons.chevron_right, size: 20),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ParserLabScreen()),
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -605,9 +609,20 @@ class _SettingsScreenState extends State<SettingsScreen>
                             'Mapato',
                             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
                           ),
-                          Text(
-                            s.personalMoneyTracker,
-                            style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
+                          GestureDetector(
+                            onTap: () {
+                              _versionTaps++;
+                              if (_versionTaps >= 7 && !_debugMode) {
+                                setState(() => _debugMode = true);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Debug mode enabled')),
+                                );
+                              }
+                            },
+                            child: Text(
+                              s.personalMoneyTracker,
+                              style: TextStyle(color: cs.onSurfaceVariant, fontSize: 12),
+                            ),
                           ),
                         ],
                       ),

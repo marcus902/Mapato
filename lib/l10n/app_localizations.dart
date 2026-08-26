@@ -1249,6 +1249,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose which model to use'**
   String get aiModelDesc;
+
+  /// No description provided for @directionReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get directionReceived;
+
+  /// No description provided for @directionSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get directionSpent;
+
+  /// No description provided for @directionSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get directionSaved;
+
+  /// No description provided for @smsCaptureFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS capture failed'**
+  String get smsCaptureFailed;
+
+  /// No description provided for @exportSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Mapato transactions'**
+  String get exportSubject;
+
+  /// No description provided for @exportText.
+  ///
+  /// In en, this message translates to:
+  /// **'Mapato transactions export ({count} rows)'**
+  String exportText(Object count);
+
+  /// No description provided for @debugTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug tools'**
+  String get debugTools;
 }
 
 class _AppLocalizationsDelegate

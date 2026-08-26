@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:mapato/l10n/app_localizations.dart';
@@ -8,7 +10,16 @@ import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MapatoApp());
+
+  FlutterError.onError = (details) {
+    debugPrint('[FlutterError] ${details.exceptionAsString()}');
+  };
+
+  runZonedGuarded(() {
+    runApp(const MapatoApp());
+  }, (error, stack) {
+    debugPrint('[ZonedError] $error');
+  });
 }
 
 class MapatoApp extends StatelessWidget {

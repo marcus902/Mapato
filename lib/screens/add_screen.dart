@@ -50,7 +50,7 @@ class _AddScreenState extends State<AddScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(s.addedDirection(directionLabel(_direction), tzs(amt))),
+        content: Text(s.addedDirection(directionLabel(_direction, context: context), tzs(amt))),
       ),
     );
     Navigator.of(context).maybePop();

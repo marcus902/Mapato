@@ -70,7 +70,7 @@
   "enableNotificationAccess": "Washesha upatikanaji wa arifa",
 
   "onboardingLanguageTitle": "Chagua lugha yako",
-  "onboardingLanguageSubtitle": "Choose your language",
+  "onboardingLanguageSubtitle": "Chagua lugha yako. Unaweza kubadilisha baadaye kwenye Mipangilio.",
   "english": "English",
   "swahili": "Kiswahili",
 
@@ -272,6 +272,14 @@
   "groqApiKeyDesc": "Pata ufunguo bila malipo katika console.groq.com",
   "enterApiKey": "Weka ufunguo wako wa API",
   "aiModel": "Mfumo wa AI",
-  "aiModelDesc": "Chagua mfumo wa kutumia"
+  "aiModelDesc": "Chagua mfumo wa kutumia",
+
+  "directionReceived": "Imepokelewa",
+  "directionSpent": "Imetumika",
+  "directionSaved": "Imehifadhiwa",
+  "smsCaptureFailed": "Umatizaji wa SMS umeshindikana",
+  "exportSubject": "Mapato - muamala",
+  "exportText": "Hamisha muamala wa Mapato (safu {count})",
+  "debugTools": "Vyombo vya ukaguzi"
 }
 

@@ -150,7 +150,7 @@ Future<List<TransactionsCompanion>> importTransactionsCsv(String content) async 
           ? Value(int.tryParse(idStr) ?? 0)
           : const Value.absent(),
       network: Value(get(row, 'network').isNotEmpty ? get(row, 'network') : 'unknown'),
-      direction: Value(get(row, 'direction') == 'in' ? 'in' : 'out'),
+      direction: Value({'in', 'out', 'transfer'}.contains(get(row, 'direction')) ? get(row, 'direction') : 'out'),
       amount: Value(amount),
       balance: Value(balance),
       counterparty:

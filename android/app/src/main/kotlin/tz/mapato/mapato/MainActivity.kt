@@ -70,7 +70,8 @@ class MainActivity : FlutterActivity() {
                 when (call.method) {
                     "startSmsService" -> {
                         try {
-                            startService(Intent(this, MapatoSmsService::class.java))
+                            androidx.core.content.ContextCompat.startForegroundService(
+                                this, Intent(this, MapatoSmsService::class.java))
                             result.success(null)
                         } catch (e: Exception) {
                             result.error("SMS_START_FAILED", e.message, null)

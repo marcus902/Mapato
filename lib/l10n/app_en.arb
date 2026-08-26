@@ -272,6 +272,14 @@
   "groqApiKeyDesc": "Get a free key at console.groq.com",
   "enterApiKey": "Enter your API key",
   "aiModel": "AI Model",
-  "aiModelDesc": "Choose which model to use"
+  "aiModelDesc": "Choose which model to use",
+
+  "directionReceived": "Received",
+  "directionSpent": "Spent",
+  "directionSaved": "Saved",
+  "smsCaptureFailed": "SMS capture failed",
+  "exportSubject": "Mapato transactions",
+  "exportText": "Mapato transactions export ({count} rows)",
+  "debugTools": "Debug tools"
 }
 

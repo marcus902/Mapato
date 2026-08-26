@@ -634,4 +634,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiModelDesc => 'Choose which model to use';
+
+  @override
+  String get directionReceived => 'Received';
+
+  @override
+  String get directionSpent => 'Spent';
+
+  @override
+  String get directionSaved => 'Saved';
+
+  @override
+  String get smsCaptureFailed => 'SMS capture failed';
+
+  @override
+  String get exportSubject => 'Mapato transactions';
+
+  @override
+  String exportText(Object count) {
+    return 'Mapato transactions export ($count rows)';
+  }
+
+  @override
+  String get debugTools => 'Debug tools';
 }

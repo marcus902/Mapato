@@ -488,7 +488,7 @@ class _TxnRow extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final isIncome = t.direction == 'in';
     final dirColor = directionColor(t.direction);
-    final dirLabel = directionLabel(t.direction);
+    final dirLabel = directionLabel(t.direction, context: context);
     final state = Provider.of<AppState>(context, listen: false);
     final catColor = state.categoryColor(t.category);
     return Material(
@@ -915,7 +915,7 @@ class TransactionDetailScreen extends StatelessWidget {
     final catColor = state.categoryColor(t.category);
     final catIcon = state.categoryIcon(t.category);
     final amountColor = directionColor(t.direction);
-    final dirLabel = directionLabel(t.direction);
+    final dirLabel = directionLabel(t.direction, context: context);
     return Scaffold(
       appBar: AppBar(
         title: Text(s.transaction),
